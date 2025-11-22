@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Slide 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Start Screen --- */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .init-btn {
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            padding: 20px 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+
+        .init-btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+        }
+
+        /* --- Loading Screen --- */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .loading-bar-container {
+            width: 600px;
+            height: 4px;
+            background: #333;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: #00ff00;
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .loading-log {
+            color: #00ff00;
+            font-size: 18px;
+            height: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Glitch Transition Overlay --- */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            animation: glitch-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transition-overlay::before {
+            content: "INITIALIZING SYSTEM...";
+            font-family: 'Orbitron', monospace;
+            font-size: 40px;
+            color: #00ff00;
+            animation: blink 0.1s infinite;
+        }
+
+        @keyframes glitch-out {
+            0% { clip-path: inset(0 0 0 0); }
+            20% { clip-path: inset(20% 0 0 0); }
+            40% { clip-path: inset(20% 0 20% 0); }
+            60% { clip-path: inset(0 0 80% 0); }
+            80% { clip-path: inset(80% 0 0 0); }
+            100% { clip-path: inset(100% 0 0 0); display: none; }
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            background-color: #0f172a; /* Slate 900 */
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            overflow: hidden;
+            position: relative;
+            color: white;
+            /* Deep perspective background */
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.2) 0%, transparent 60%);
+        }
+
+        /* Cyber Grid */
+        .cyber-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
+            transform: perspective(1000px) rotateX(20deg) scale(1.5);
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Pulsing Orb */
+        .pulsing-orb {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 800px;
+            height: 800px;
+            background: rgba(37, 99, 235, 0.15); /* Blue 600/20 */
+            border-radius: 50%;
+            filter: blur(80px);
+            mix-blend-mode: screen;
+            animation: slowPulse 6s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes slowPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        /* Layout Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            padding: 100px 120px;
+            box-sizing: border-box;
+            align-items: center;
+        }
+
+        .left-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .right-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 100%;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(234, 179, 8, 0.1); /* Yellow 500/10 */
+            border: 1px solid rgba(250, 204, 21, 0.6); /* Yellow 400/60 */
+            color: #fde047; /* Yellow 300 */
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeInDown 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin: 0;
+            color: white;
+            letter-spacing: -0.02em;
+            animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            animation-delay: 0.2s;
+        }
+
+        .text-gradient-tech {
+            background: linear-gradient(135deg, #38bdf8, #a855f7, #f472b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 48px;
+            color: #cbd5e1; /* Slate 300 */
+            font-weight: 500;
+            padding-left: 30px;
+            border-left: 6px solid #3b82f6; /* Blue 500 */
+            margin: 0;
+            animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            animation-delay: 0.4s;
+        }
+
+        /* NotebookLM Box */
+        .notebook-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-top: 40px;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.6s;
+            overflow: hidden;
+        }
+
+        .notebook-icon {
+            width: 100px;
+            height: 100px;
+            background: white; /* White background for the logo */
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px -5px rgba(255, 255, 255, 0.2);
+        }
+        
+        .notebook-icon svg {
+            width: 70px;
+            height: 70px;
+        }
+
+        .notebook-text h3 {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 0;
+            color: white;
+        }
+
+        .notebook-text p {
+            font-size: 28px;
+            margin: 5px 0 0 0;
+            color: #94a3b8; /* Slate 400 */
+        }
+
+        /* Free Ribbon */
+        .free-ribbon {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, #2dd4bf, #10b981);
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Fake Terminal */
+        .terminal-window {
+            width: 800px; /* Increased width */
+            height: 600px; /* Increased height */
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            animation: fadeInRight 1s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.8s;
+        }
+
+        .terminal-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px 24px; /* Larger header padding */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dot { width: 14px; height: 14px; border-radius: 50%; } /* Larger dots */
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #eab308; }
+        .dot.green { background: #22c55e; }
+
+        .terminal-title {
+            margin-left: 10px;
+            color: #94a3b8;
+            font-size: 16px; /* Larger title */
+        }
+
+        .terminal-body {
+            padding: 30px; /* Larger padding */
+            color: #22d3ee; /* Cyan 400 */
+            font-size: 26px; /* Larger font size */
+            line-height: 1.6;
+            flex: 1;
+            overflow: hidden;
+            text-shadow: 0 0 5px rgba(34, 211, 238, 0.5);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 14px; /* Larger cursor */
+            height: 28px;
+            background: #22d3ee;
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        .command-line {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .prompt {
+            color: #a855f7; /* Purple 500 */
+            margin-right: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <button class="init-btn" onclick="startSystem()">Initiate System</button>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-log" id="loadingLog">SYSTEM READY...</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content" style="display: none;">
+        <div class="transition-overlay"></div>
+        <div class="cyber-grid"></div>
+        <div class="pulsing-orb"></div>
+
+        <div class="container">
+        <div class="left-content">
+            <div class="badge">
+                <span>🏆</span> 神器榜 #1
+            </div>
+            
+            <h1>
+                小赫的AI #1<br>
+                <span class="text-gradient-tech">黑科技來了！</span>
+            </h1>
+            
+            <div class="subtitle">
+        「不能錯」的任務，就只有…
+            </div>
+
+            <div class="notebook-box">
+                <div class="free-ribbon">完全免費</div>
+                <div class="notebook-icon">
+                    <svg viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Precise NotebookLM Arches (B&W) -->
+                        <path d="M 20 90 A 50 50 0 0 1 120 90" stroke="#000" stroke-width="14" stroke-linecap="round" />
+                        <path d="M 25 90 A 40 40 0 0 1 105 90" stroke="#000" stroke-width="14" stroke-linecap="round" opacity="0.7" />
+                        <path d="M 30 90 A 30 30 0 0 1 90 90" stroke="#000" stroke-width="14" stroke-linecap="round" opacity="0.4" />
+                    </svg>
+                </div>
+                <div class="notebook-text">
+                    <h3>NotebookLM</h3>
+                    <p>by <span style="color: white; font-weight: bold;">Google</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <div class="terminal-title">gemini@notebooklm:~</div>
+                </div>
+                <div class="terminal-body" id="terminalBody">
+                    <div class="command-line">
+                        <span class="prompt">➜</span>
+                        <span class="command">./initialize_core.sh --verbose</span>
+                    </div>
+                    <div id="terminal-content"></div>
+                    <span class="cursor">_</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startSystem() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
+            
+            const loadingLog = document.getElementById('loadingLog');
+            const loadingBar = document.getElementById('loadingBar');
+            const logs = [
+                "INITIALIZING KERNEL...",
+                "LOADING ASSETS...",
+                "CONNECTING TO NEURAL NET...",
+                "DECRYPTING DATA STREAMS...",
+                "OPTIMIZING VISUALS...",
+                "SYNCING AUDIO...",
+                "CHECKING INTEGRITY...",
+                "SYSTEM READY."
+            ];
+            
+            let progress = 0;
+            const duration = 10000; // 10 seconds
+            const interval = 50; // Update every 50ms
+            const steps = duration / interval;
+            const increment = 100 / steps;
+            
+            const timer = setInterval(() => {
+                progress += increment;
+                loadingBar.style.width = Math.min(progress, 100) + '%';
+                
+                // Random log update
+                if (Math.random() > 0.9) {
+                    loadingLog.innerText = logs[Math.floor(Math.random() * logs.length)];
+                }
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    // Start the terminal typing effect
+                    typeLine();
+                }
+            }, interval);
+        }
+
+        const terminalBody = document.getElementById('terminalBody');
+        const contentDiv = document.getElementById('terminal-content');
+        
+        const lines = [
+            "> 正在初始化 Gemini 2.5 Pro 模型...",
+            "> 分配 1,000,000 Token 上下文窗口...",
+            "> [OK] 上下文窗口已鎖定。",
+            "> 正在加載源文檔...",
+            "> 解析 PDF, TXT, Markdown, DOCX, 音頻...",
+            "> [成功] 已完成最大索引 50 個來源。",
+            "> 生成深度語音概覽...",
+            "> 合成語音 [主持人_1, 主持人_2]...",
+            "> [音頻] 播客生成完成。",
+            "> 分析語義關係...",
+            "> 提取引用和關鍵語錄...",
+            "> [系統] 知識圖譜已建立。",
+            "> 檢查訂閱狀態...",
+            "> 狀態: 100% 免費 (無需信用卡)",
+            "> 準備好回答用戶查詢。"
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        let currentLineElement = null;
+
+        function typeLine() {
+            // Reset if we reached the end
+            if (lineIndex >= lines.length) {
+                setTimeout(() => {
+                    contentDiv.innerHTML = '';
+                    lineIndex = 0;
+                    typeLine();
+                }, 5000);
+                return;
+            }
+
+            if (charIndex === 0) {
+                currentLineElement = document.createElement('div');
+                currentLineElement.style.marginBottom = '8px';
+                currentLineElement.style.color = lineIndex === lines.length - 2 ? '#4ade80' : '#22d3ee'; // Green for FREE line
+                if (lines[lineIndex].includes('[ERROR]')) currentLineElement.style.color = '#ef4444';
+                if (lines[lineIndex].includes('[OK]') || lines[lineIndex].includes('[成功]')) currentLineElement.style.color = '#4ade80';
+                
+                contentDiv.appendChild(currentLineElement);
+            }
+
+            const currentLineText = lines[lineIndex];
+            currentLineElement.textContent = currentLineText.substring(0, charIndex + 1);
+            charIndex++;
+
+            // Auto scroll
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+
+            if (charIndex < currentLineText.length) {
+                // Random typing speed for realism
+                setTimeout(typeLine, Math.random() * 20 + 10);
+            } else {
+                // Line finished
+                charIndex = 0;
+                lineIndex++;
+                setTimeout(typeLine, 3000); // Pause between lines
+            }
+        }
+
+        // Start after the terminal animation (approx 1s)
+        // setTimeout(typeLine, 1200);
+    </script>
+</body>
+</html>

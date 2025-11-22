@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Slide 5: Tactical Cockpit</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap');
+
+        :root {
+            --hud-color: #00f3ff;
+            --hud-dim: rgba(0, 243, 255, 0.2);
+            --alert-color: #ff3366;
+            --bg-color: #050a10;
+            --panel-bg: rgba(10, 20, 30, 0.85);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            background: var(--bg-color);
+            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* --- 1. Background World (Battlefield) --- */
+        .world-viewport {
+            position: absolute;
+            inset: 0;
+            perspective: 1000px;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .digital-terrain {
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(var(--hud-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--hud-dim) 1px, transparent 1px);
+            background-size: 100px 100px;
+            transform: rotateX(80deg);
+            animation: terrainMove 5s linear infinite;
+            mask-image: linear-gradient(to top, black 40%, transparent 95%);
+        }
+
+        @keyframes terrainMove {
+            from { background-position: 0 0; }
+            to { background-position: 0 100px; }
+        }
+
+        /* --- 2. Cockpit Overlay (First Person Feel) --- */
+        .cockpit-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        .cockpit-frame {
+            position: absolute;
+            inset: 20px;
+            border: 2px solid var(--hud-dim);
+            clip-path: polygon(
+                0 0, 20% 0, 25% 5%, 75% 5%, 80% 0, 100% 0,
+                100% 80%, 95% 85%, 95% 100%,
+                5% 100%, 5% 85%, 0 80%
+            );
+        }
+
+        /* --- 3. Top HUD Bar --- */
+        .top-hud {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px;
+            background: linear-gradient(90deg, transparent, var(--panel-bg) 20%, var(--panel-bg) 80%, transparent);
+            border-bottom: 2px solid var(--hud-color);
+            z-index: 10;
+        }
+
+        .mission-title {
+            font-family: 'Black Ops One', cursive;
+            font-size: 48px;
+            color: var(--hud-color);
+            text-shadow: 0 0 20px var(--hud-color);
+            letter-spacing: 4px;
+        }
+
+        .coordinates {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--alert-color);
+            font-size: 24px;
+            text-align: right;
+        }
+
+        /* --- 4. Center Viewport (The Process) --- */
+        .center-viewport {
+            position: absolute;
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .node-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .node-wrapper:hover {
+            transform: scale(1.1);
+        }
+
+        .hex-node {
+            width: 160px;
+            height: 140px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid var(--hud-color);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+        }
+
+        .hex-node.target {
+            border-color: var(--alert-color);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.3);
+            animation: pulseTarget 2s infinite;
+        }
+
+        .node-icon {
+            width: 60px;
+            height: 60px;
+            fill: white;
+        }
+
+        .node-label {
+            margin-top: 20px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--hud-color);
+        }
+
+        .connect-line {
+            flex: 1;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 20px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .connect-line::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--hud-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: flowLine 2s infinite;
+        }
+
+        /* --- 5. Bottom Dashboard (Physical Console) --- */
+        .dashboard-console {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to top, #0a0a0a, #1a1a1a 10%, transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 0 50px 30px 50px;
+            z-index: 20;
+            gap: 40px;
+        }
+
+        /* Left: Radar Module */
+        .module-frame {
+            background: rgba(10, 25, 40, 0.9);
+            border: 2px solid #334155;
+            border-top: 4px solid var(--hud-color);
+            padding: 20px;
+            position: relative;
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+        }
+
+        .radar-module {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .radar-screen {
+            width: 180px;
+            height: 180px;
+            border: 2px solid var(--hud-color);
+            border-radius: 50%;
+            background: 
+                radial-gradient(transparent 30%, rgba(0, 243, 255, 0.2) 31%, transparent 32%),
+                radial-gradient(transparent 60%, rgba(0, 243, 255, 0.2) 61%, transparent 62%),
+                linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .radar-sweep {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50%; height: 50%;
+            background: linear-gradient(45deg, transparent 50%, rgba(0, 243, 255, 0.8) 100%);
+            transform-origin: top left;
+            animation: radarSweep 3s linear infinite;
+        }
+
+        .radar-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--alert-color);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--alert-color);
+            animation: dotBlink 2s infinite;
+        }
+
+        .module-label {
+            font-family: 'Share Tech Mono';
+            color: var(--hud-color);
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--hud-dim);
+            width: 100%;
+            text-align: center;
+            padding-bottom: 5px;
+        }
+
+        /* Center/Right: Timeline Module */
+        .timeline-module {
+            flex: 1;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-grid {
+            display: flex;
+            gap: 20px;
+            height: 100%;
+            margin-top: 10px;
+        }
+
+        .mission-card {
+            flex: 1;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--hud-dim);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card:hover {
+            background: rgba(0, 243, 255, 0.15);
+            border-color: var(--hud-color);
+        }
+
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--hud-dim);
+        }
+
+        .mission-card:hover::before {
+            background: var(--hud-color);
+        }
+
+        .card-id {
+            font-family: 'Black Ops One';
+            font-size: 32px;
+            color: var(--hud-dim);
+        }
+        .mission-card:hover .card-id { color: var(--hud-color); }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .card-status {
+            font-size: 14px;
+            color: #aaa;
+            font-family: 'Share Tech Mono';
+        }
+
+        /* Animations */
+        @keyframes flowLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
+        @keyframes pulseTarget { 0% { box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); } 50% { box-shadow: 0 0 50px rgba(255, 51, 102, 0.8); } 100% { box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); } }
+        @keyframes radarSweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+        /* Entry Animations */
+        .node-wrapper { opacity: 0; animation: popIn 0.5s ease-out forwards; }
+        .node-wrapper:nth-child(1) { animation-delay: 0.5s; }
+        .node-wrapper:nth-child(3) { animation-delay: 1.5s; }
+        .node-wrapper:nth-child(5) { animation-delay: 2.5s; }
+        .node-wrapper:nth-child(7) { animation-delay: 3.5s; }
+
+        @keyframes popIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+    <div class="cockpit-overlay"></div>
+    <div class="cockpit-frame"></div>
+    
+    <div class="world-viewport">
+        <div class="digital-terrain"></div>
+    </div>
+
+    <!-- Top HUD -->
+    <div class="top-hud">
+        <div class="mission-title">戰術演示：研究行動</div>
+        <div class="coordinates">
+            TARGET: 零幻覺<br>
+            LAT: 34.592 | LNG: 12.404
+        </div>
+    </div>
+
+    <!-- Center Viewport: The Process Chain -->
+    <div class="center-viewport">
+        <!-- Step 1 -->
+        <div class="node-wrapper">
+            <div class="hex-node">
+                <svg class="node-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="node-label">資料上傳</div>
+        </div>
+
+        <div class="connect-line"></div>
+
+        <!-- Step 2 -->
+        <div class="node-wrapper">
+            <div class="hex-node">
+                <svg class="node-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            </div>
+            <div class="node-label">情報分析</div>
+        </div>
+
+        <div class="connect-line"></div>
+
+        <!-- Step 3 -->
+        <div class="node-wrapper">
+            <div class="hex-node">
+                <svg class="node-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            </div>
+            <div class="node-label">精準提問</div>
+        </div>
+
+        <div class="connect-line"></div>
+
+        <!-- Step 4 -->
+        <div class="node-wrapper">
+            <div class="hex-node target">
+                <svg class="node-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <div class="node-label" style="color: var(--alert-color);">來源鎖定</div>
+        </div>
+    </div>
+
+    <!-- Bottom Dashboard -->
+    <div class="dashboard-console">
+        <!-- Left: Active Radar -->
+        <div class="module-frame radar-module">
+            <div class="module-label">區域掃描雷達</div>
+            <div class="radar-screen">
+                <div class="radar-sweep"></div>
+                <div class="radar-dot" style="top: 30%; left: 70%;"></div>
+                <div class="radar-dot" style="top: 60%; left: 40%; animation-delay: 1s;"></div>
+            </div>
+        </div>
+
+        <!-- Right: Mission Timeline -->
+        <div class="module-frame timeline-module">
+            <div class="module-label">戰略部署隊列</div>
+            <div class="timeline-grid">
+                <!-- Week 2 -->
+                <div class="mission-card">
+                    <div class="card-id">02</div>
+                    <div class="card-info">
+                        <div class="card-title">數據分析協議</div>
+                        <div class="card-status">STATUS: PENDING</div>
+                    </div>
+                </div>
+                <!-- Week 3 -->
+                <div class="mission-card">
+                    <div class="card-id">03</div>
+                    <div class="card-info">
+                        <div class="card-title">深潛行動執行</div>
+                        <div class="card-status">STATUS: LOCKED</div>
+                    </div>
+                </div>
+                <!-- Week 4 -->
+                <div class="mission-card">
+                    <div class="card-id">04</div>
+                    <div class="card-info">
+                        <div class="card-title">事實查核部署</div>
+                        <div class="card-status">STATUS: STANDBY</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

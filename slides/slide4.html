@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Slide 4</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Inter:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap');
+
+        /* --- Glitch Transition Overlay --- */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            animation: glitch-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transition-overlay::before {
+            content: "ACCESSING CORE...";
+            font-family: 'Orbitron', monospace;
+            font-size: 40px;
+            color: #00ff00;
+            animation: blink 0.1s infinite;
+        }
+
+        @keyframes glitch-out {
+            0% { clip-path: inset(0 0 0 0); }
+            20% { clip-path: inset(20% 0 0 0); }
+            40% { clip-path: inset(20% 0 20% 0); }
+            60% { clip-path: inset(0 0 80% 0); }
+            80% { clip-path: inset(80% 0 0 0); }
+            100% { clip-path: inset(100% 0 0 0); display: none; }
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            background: #0f172a;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            overflow: hidden;
+            color: white;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.15) 0%, transparent 60%);
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
+            transform: perspective(1000px) rotateX(20deg) scale(1.5);
+            opacity: 0.4;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 40px;
+        }
+
+        h2 {
+            font-size: 80px;
+            margin-bottom: 60px;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, #fff 30%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3));
+            animation: slideDown 0.8s ease-out forwards;
+        }
+
+        /* 3D Holographic Cards */
+        .card-container {
+            display: flex;
+            gap: 60px;
+            width: 1600px;
+            height: 700px;
+            perspective: 2000px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 450px;
+            height: 600px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease-out;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-30px) rotateX(10deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .card-glass {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(56, 189, 248, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 30px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(56, 189, 248, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .card:hover .card-glass {
+            border-color: rgba(56, 189, 248, 0.8);
+            box-shadow: 
+                0 0 50px rgba(56, 189, 248, 0.2),
+                inset 0 0 30px rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Floating Elements */
+        .icon-float {
+            font-size: 120px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+            animation: float 3s ease-in-out infinite;
+            transform: translateZ(50px);
+        }
+
+        .card:nth-child(2) .icon-float { animation-delay: 1s; }
+        .card:nth-child(3) .icon-float { animation-delay: 2s; }
+
+        h3 {
+            font-size: 42px;
+            color: #fff;
+            margin: 0 0 20px 0;
+            text-align: center;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            transform: translateZ(30px);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            transform: translateZ(20px);
+        }
+
+        .feature-list li {
+            font-size: 22px;
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .card:hover .feature-list li {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: scale(1.02);
+        }
+
+        .feature-list li:nth-child(1) { transition-delay: 0.1s; }
+        .feature-list li:nth-child(2) { transition-delay: 0.2s; }
+        .feature-list li:nth-child(3) { transition-delay: 0.3s; }
+
+        .feature-list li::before {
+            content: '>';
+            color: #38bdf8;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        /* Cyberpunk Decorations */
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #38bdf8;
+            transition: all 0.3s;
+        }
+
+        .tl { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+        .tr { top: 10px; right: 10px; border-left: 0; border-bottom: 0; }
+        .bl { bottom: 10px; left: 10px; border-right: 0; border-top: 0; }
+        .br { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+
+        .card:hover .corner-decoration {
+            width: 30px;
+            height: 30px;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateZ(50px); }
+            50% { transform: translateY(-20px) translateZ(50px); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(100px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="transition-overlay"></div>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <h2>NotebookLM 三大核心功能</h2>
+        
+        <div class="card-container">
+            <!-- Card 1 -->
+            <div class="card">
+                <div class="card-glass">
+                    <div class="corner-decoration tl"></div>
+                    <div class="corner-decoration tr"></div>
+                    <div class="corner-decoration bl"></div>
+                    <div class="corner-decoration br"></div>
+                    
+                    <div class="icon-float">📝</div>
+                    <h3>引用式問答</h3>
+                    <ul class="feature-list">
+                        <li>上傳 PDF / Docs / Slides</li>
+                        <li>每個回答都標註來源</li>
+                        <li>點擊引用直接跳轉原文</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card">
+                <div class="card-glass">
+                    <div class="corner-decoration tl"></div>
+                    <div class="corner-decoration tr"></div>
+                    <div class="corner-decoration bl"></div>
+                    <div class="corner-decoration br"></div>
+
+                    <div class="icon-float">🎙️</div>
+                    <h3>影音播客</h3>
+                    <ul class="feature-list">
+                        <li>一鍵生成 AI Podcast</li>
+                        <li>主持人深度討論內容</li>
+                        <li>通勤、運動時的最佳學習伴侶</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card">
+                <div class="card-glass">
+                    <div class="corner-decoration tl"></div>
+                    <div class="corner-decoration tr"></div>
+                    <div class="corner-decoration bl"></div>
+                    <div class="corner-decoration br"></div>
+
+                    <div class="icon-float">📚</div>
+                    <h3>學習工具</h3>
+                    <ul class="feature-list">
+                        <li>生成 Study Guide 學習指南</li>
+                        <li>自動整理 FAQ 常見問題</li>
+                        <li>建立 Mind Map 思維導圖</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

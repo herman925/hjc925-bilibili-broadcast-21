@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Slide 6</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@700&family=Orbitron:wght@400;700;900&display=swap');
+
+        :root {
+            --neon-gold: #FFD700;
+            --neon-blue: #00f3ff;
+            --neon-pink: #bc13fe;
+            --bg-dark: #050505;
+        }
+
+        /* --- Glitch Transition Overlay --- */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10000;
+            animation: glitch-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transition-overlay::before {
+            content: "FINALIZING...";
+            font-family: 'Orbitron', monospace;
+            font-size: 40px;
+            color: #00ff00;
+            animation: blink 0.1s infinite;
+        }
+
+        @keyframes glitch-out {
+            0% { clip-path: inset(0 0 0 0); }
+            20% { clip-path: inset(20% 0 0 0); }
+            40% { clip-path: inset(20% 0 20% 0); }
+            60% { clip-path: inset(0 0 80% 0); }
+            80% { clip-path: inset(80% 0 0 0); }
+            100% { clip-path: inset(100% 0 0 0); display: none; }
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            background: var(--bg-dark);
+            font-family: 'Noto Sans TC', sans-serif;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Background Animation */
+        .bg-grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(80px) translateZ(-200px); }
+        }
+
+        /* Layout */
+        .content-wrapper {
+            height: 100%;
+            display: grid;
+            grid-template-rows: 1fr 1.2fr; /* Top for content, Bottom for Follow */
+            padding: 60px 100px;
+            box-sizing: border-box;
+            gap: 40px;
+            z-index: 1;
+        }
+
+        /* Top Section: Why #1 */
+        .top-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h2 {
+            font-size: 64px;
+            margin: 0 0 40px 0;
+            background: linear-gradient(90deg, #fff, var(--neon-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cards-row {
+            display: flex;
+            gap: 30px;
+        }
+
+        .feature-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .feature-icon { font-size: 40px; margin-bottom: 10px; }
+        .feature-title { font-size: 28px; font-weight: bold; color: var(--neon-blue); }
+        .feature-desc { font-size: 20px; color: #ccc; }
+
+        /* Bottom Section: Follow Me */
+        .bottom-section {
+            background: linear-gradient(135deg, rgba(0, 161, 214, 0.1), rgba(188, 19, 254, 0.1));
+            border: 2px solid var(--neon-blue);
+            border-radius: 30px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
+            animation: pulseBorder 4s infinite;
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); border-color: var(--neon-blue); }
+            50% { box-shadow: 0 0 60px rgba(0, 243, 255, 0.3); border-color: var(--neon-pink); }
+        }
+
+        .follow-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            color: #fff;
+            text-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .url-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px 60px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bilibili-icon {
+            width: 60px;
+            height: 60px;
+            background: #00a1d6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .url-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            color: var(--neon-gold);
+            letter-spacing: 1px;
+        }
+
+        .search-hint {
+            font-size: 32px;
+            color: #aaa;
+            margin-top: 20px;
+        }
+        
+        .search-highlight {
+            color: white;
+            background: #00a1d6;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="transition-overlay"></div>
+    <div class="bg-grid"></div>
+    
+    <!-- Particles -->
+    <script>
+        for(let i=0; i<20; i++) {
+            let p = document.createElement('div');
+            p.className = 'particle';
+            p.style.width = Math.random() * 5 + 2 + 'px';
+            p.style.height = p.style.width;
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = Math.random() * 5 + 5 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(p);
+        }
+    </script>
+
+    <div class="content-wrapper">
+        <!-- Top: Why #1 -->
+        <div class="top-section">
+            <h2>🏆 為什麼選擇 NotebookLM？</h2>
+            <div class="cards-row">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">超高準確度</div>
+                    <div class="feature-desc">98% 引用準確度，拒絕 AI 幻覺，學術級別的嚴謹。</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">最強大腦</div>
+                    <div class="feature-desc">搭載 Gemini 2.5 Pro + LearnLM，理解力與推理力滿點。</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💸</div>
+                    <div class="feature-title">完全免費</div>
+                    <div class="feature-desc">Google 佛心出品，無限制使用，學生黨/研究員必備。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom: Follow Me -->
+        <div class="bottom-section">
+            <div class="follow-title">關注 Bilibili 獲取更多 AI 實戰教學</div>
+            
+            <div class="url-container">
+                <div class="bilibili-icon">B</div>
+                <div class="url-text">space.bilibili.com/3546854541232968</div>
+            </div>
+
+            <div class="search-hint">
+                或者直接搜尋：<span class="search-highlight">我是赫爾曼</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

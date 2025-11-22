@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotebookLM Presentation</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        #slide-frame {
+            width: 1920px;
+            height: 1080px;
+            border: none;
+            display: block;
+            position: absolute;
+            transform-origin: 0 0;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body:hover .controls {
+            opacity: 1;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .counter {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body:hover .counter {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="slide-frame" src="slides/slide1.html"></iframe>
+
+    <div class="counter">
+        <span id="current">1</span> / <span id="total">6</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">Previous</button>
+        <button onclick="nextSlide()">Next</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+        const frame = document.getElementById('slide-frame');
+        const currentEl = document.getElementById('current');
+
+        function resize() {
+            const targetWidth = 1920;
+            const targetHeight = 1080;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            const scale = Math.min(windowWidth / targetWidth, windowHeight / targetHeight);
+            
+            const left = (windowWidth - targetWidth * scale) / 2;
+            const top = (windowHeight - targetHeight * scale) / 2;
+            
+            frame.style.transform = `scale(${scale})`;
+            frame.style.left = `${left}px`;
+            frame.style.top = `${top}px`;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        function updateSlide() {
+            frame.src = `slides/slide${currentSlide}.html`;
+            currentEl.textContent = currentSlide;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
