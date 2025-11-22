@@ -10,12 +10,47 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap');
 
+        /* --- Glitch Transition Overlay --- */
+        .transition-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: glitch-out 1.5s cubic-bezier(1, 0, 0, 1) forwards;
+            pointer-events: none;
+        }
+
+        .transition-overlay::before {
+            content: "SYSTEM_INIT :: TACTICAL_VIEW";
+            font-family: 'Orbitron', monospace;
+            font-size: 40px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            animation: blink 0.1s infinite;
+        }
+
+        @keyframes glitch-out {
+            0% { clip-path: inset(0 0 0 0); }
+            20% { clip-path: inset(20% 0 0 0); }
+            40% { clip-path: inset(20% 0 20% 0); }
+            60% { clip-path: inset(0 0 80% 0); }
+            80% { clip-path: inset(80% 0 0 0); }
+            100% { clip-path: inset(100% 0 0 0); opacity: 0; }
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
         :root {
             --hud-color: #00f3ff;
             --hud-dim: rgba(0, 243, 255, 0.2);
             --alert-color: #ff3366;
             --bg-color: #050a10;
-            --panel-bg: rgba(10, 20, 30, 0.85);
+            --panel-bg: rgba(10, 20, 30, 0.9);
+            --matrix-green: #00ff41;
+            --warn-color: #ffcc00;
         }
 
         * { box-sizing: border-box; }
@@ -26,41 +61,92 @@
             width: 1920px;
             height: 1080px;
             background: var(--bg-color);
-            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+            font-family: 'Orbitron', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
             overflow: hidden;
             color: white;
         }
 
         /* --- 1. Background World (Battlefield) --- */
-        .world-viewport {
+        .viewport-container {
             position: absolute;
             inset: 0;
             perspective: 1000px;
             z-index: 0;
             overflow: hidden;
+            background: radial-gradient(circle at center, #0b1021 0%, #000000 100%);
+        }
+
+        .world-mover {
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .star-field {
+            position: absolute;
+            inset: -100%;
+            width: 300%;
+            height: 300%;
+            background-image: 
+                radial-gradient(white 2px, transparent 2px),
+                radial-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+            background-size: 100px 100px, 200px 200px;
+            transform: translateZ(-800px);
+            animation: starMove 60s linear infinite;
+            opacity: 0.6;
         }
 
         .digital-terrain {
             position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            bottom: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
             background-image: 
                 linear-gradient(var(--hud-dim) 1px, transparent 1px),
                 linear-gradient(90deg, var(--hud-dim) 1px, transparent 1px);
             background-size: 100px 100px;
-            transform: rotateX(80deg);
-            animation: terrainMove 5s linear infinite;
-            mask-image: linear-gradient(to top, black 40%, transparent 95%);
+            transform: rotateX(85deg) translateZ(-200px);
+            animation: terrainMove 20s linear infinite;
+            -webkit-mask-image: linear-gradient(to top, black 20%, transparent 90%);
+            mask-image: linear-gradient(to top, black 20%, transparent 90%);
+            opacity: 0.3;
         }
+
+        #particleSystem {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            transform-style: preserve-3d;
+            z-index: 10; /* Ensure above terrain/stars */
+        }
+        
+        .particle {
+            position: absolute;
+            background: white;
+            will-change: transform, opacity;
+            box-shadow: 0 0 10px white;
+        }
+
+        .particle.debris { width: 3px; height: 3px; background: #888; border-radius: 50%; }
+        .particle.star { width: 2px; height: 2px; background: white; box-shadow: 0 0 4px white; border-radius: 50%; }
+        .particle.rock { 
+            background: #333; 
+            width: 80px; height: 80px; 
+            box-shadow: inset 5px 5px 20px rgba(0,0,0,1), inset -5px -5px 20px rgba(255,255,255,0.1);
+        }
+        .particle.bolt { width: 400px; height: 3px; background: linear-gradient(90deg, transparent, var(--hud-color), white); box-shadow: 0 0 20px var(--hud-color); }
+
+        /* Hyperdrive State */
+        body.hyperdrive .digital-terrain { animation: terrainMove 0.2s linear infinite; opacity: 0.8; filter: drop-shadow(0 0 10px var(--hud-color)); }
 
         @keyframes terrainMove {
             from { background-position: 0 0; }
             to { background-position: 0 100px; }
         }
 
-        /* --- 2. Cockpit Overlay (First Person Feel) --- */
+        /* --- 2. Cockpit Overlay --- */
         .cockpit-overlay {
             position: absolute;
             inset: 0;
@@ -69,8 +155,9 @@
             box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
             background: 
                 linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 6px 100%;
+            mix-blend-mode: overlay;
         }
 
         .cockpit-frame {
@@ -78,387 +165,862 @@
             inset: 20px;
             border: 2px solid var(--hud-dim);
             clip-path: polygon(
-                0 0, 20% 0, 25% 5%, 75% 5%, 80% 0, 100% 0,
-                100% 80%, 95% 85%, 95% 100%,
-                5% 100%, 5% 85%, 0 80%
+                0 0, 20% 0, 25% 8%, 75% 8%, 80% 0, 100% 0,
+                100% 65%, 95% 70%, 95% 100%,
+                5% 100%, 5% 70%, 0 65%
             );
+            z-index: 90;
+            pointer-events: none;
         }
 
         /* --- 3. Top HUD Bar --- */
         .top-hud {
             position: absolute;
-            top: 40px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60%;
+            width: 80%; /* Wider to prevent cutoff */
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 40px;
+            align-items: flex-start;
+            padding: 15px 80px;
             background: linear-gradient(90deg, transparent, var(--panel-bg) 20%, var(--panel-bg) 80%, transparent);
             border-bottom: 2px solid var(--hud-color);
-            z-index: 10;
+            z-index: 95;
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%); /* Less aggressive slope */
         }
 
         .mission-title {
-            font-family: 'Black Ops One', cursive;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-weight: 900;
             font-size: 48px;
-            color: var(--hud-color);
+            color: white;
             text-shadow: 0 0 20px var(--hud-color);
-            letter-spacing: 4px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .coordinates {
             font-family: 'Share Tech Mono', monospace;
-            color: var(--alert-color);
+            color: var(--hud-color);
             font-size: 24px;
             text-align: right;
+            line-height: 1.4;
+            text-shadow: 0 0 5px var(--hud-color);
         }
 
-        /* --- 4. Center Viewport (The Process) --- */
-        .center-viewport {
+        .target-highlight {
+            font-size: 48px;
+            font-family: 'Black Ops One';
+            color: var(--alert-color);
+            text-shadow: 0 0 20px var(--alert-color);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        /* --- 4. Quest Panel (RPG Style) --- */
+        .quest-panel {
             position: absolute;
             top: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
+            left: 80px;
+            width: 380px;
+            background: rgba(0, 20, 40, 0.6);
+            border-left: 4px solid var(--hud-color);
+            padding: 20px;
+            z-index: 95;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
         }
 
-        .node-wrapper {
+        .quest-header {
+            font-family: 'Black Ops One';
+            font-size: 28px;
+            color: var(--hud-color);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--hud-dim);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quest-list {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-item {
+            display: flex;
             align-items: center;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .node-wrapper:hover {
-            transform: scale(1.1);
-        }
-
-        .hex-node {
-            width: 160px;
-            height: 140px;
+            gap: 15px;
+            padding: 12px;
             background: rgba(0, 20, 40, 0.8);
-            border: 2px solid var(--hud-color);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            border: 1px solid var(--hud-dim);
+            transition: all 0.3s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .quest-item:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--hud-color);
+        }
+
+        .quest-item.completed {
+            background: rgba(0, 255, 65, 0.1);
+            border-color: var(--matrix-green);
+        }
+        
+        .quest-item.completed .quest-text,
+        .quest-item.completed .quest-checkbox {
+            color: var(--matrix-green);
+            text-shadow: 0 0 5px var(--matrix-green);
+        }
+
+        .quest-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            font-size: 16px;
+            color: var(--hud-color);
         }
 
-        .hex-node.target {
-            border-color: var(--alert-color);
-            box-shadow: 0 0 30px rgba(255, 51, 102, 0.3);
-            animation: pulseTarget 2s infinite;
+        .quest-text {
+            font-family: 'Microsoft JhengHei', 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 1px;
+            color: var(--hud-color);
+            text-shadow: 0 0 5px var(--hud-dim);
         }
 
-        .node-icon {
-            width: 60px;
-            height: 60px;
-            fill: white;
+        /* --- 5. Center Target Display --- */
+        .target-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Let clicks pass through unless specifically targeting */
         }
 
-        .node-label {
-            margin-top: 20px;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: #fff;
-            text-shadow: 0 0 10px var(--hud-color);
+        .reticle-ring {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border: 2px solid var(--alert-color);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: spinSlow 20s linear infinite;
         }
-
-        .connect-line {
-            flex: 1;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            margin: 0 20px;
-            margin-bottom: 60px;
-            position: relative;
-        }
-
-        .connect-line::after {
+        
+        .reticle-ring::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: var(--hud-color);
-            transform: scaleX(0);
-            transform-origin: left;
-            animation: flowLine 2s infinite;
+            inset: -10px;
+            border: 2px dashed var(--alert-color);
+            border-radius: 50%;
+            animation: spinReverse 30s linear infinite;
         }
 
-        /* --- 5. Bottom Dashboard (Physical Console) --- */
+        .target-label {
+            font-family: 'Black Ops One';
+            font-size: 72px;
+            color: var(--alert-color);
+            text-shadow: 0 0 30px var(--alert-color), 4px 4px 0px black;
+            text-align: center;
+            line-height: 1;
+            z-index: 100;
+            animation: pulseAlert 2s infinite;
+        }
+
+        .target-sub {
+            font-family: 'Share Tech Mono';
+            font-size: 28px;
+            color: white;
+            margin-top: 10px;
+            letter-spacing: 6px;
+            background: var(--alert-color);
+            padding: 5px 20px;
+            text-shadow: none;
+        }
+
+        /* --- 6. Bottom Dashboard (Cockpit Controls) --- */
         .dashboard-console {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 300px;
-            background: linear-gradient(to top, #0a0a0a, #1a1a1a 10%, transparent);
+            height: 250px;
+            background: linear-gradient(to top, #0a0a0a, #151515 30%, transparent);
             display: flex;
             align-items: flex-end;
-            padding: 0 50px 30px 50px;
-            z-index: 20;
-            gap: 40px;
+            padding: 0 60px 30px 60px;
+            z-index: 95;
+            gap: 30px;
+            justify-content: space-between;
         }
 
-        /* Left: Radar Module */
+        /* Module Frames */
         .module-frame {
-            background: rgba(10, 25, 40, 0.9);
-            border: 2px solid #334155;
-            border-top: 4px solid var(--hud-color);
-            padding: 20px;
-            position: relative;
-            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+            background: var(--panel-bg);
+            border: 1px solid #334155;
+            border-top: 3px solid var(--hud-color);
+            padding: 15px;
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 15%);
         }
 
+        /* Left: Radar (Compact) */
         .radar-module {
-            width: 250px;
-            height: 250px;
+            width: 200px;
+            height: 180px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .radar-screen {
-            width: 180px;
-            height: 180px;
+            width: 120px;
+            height: 120px;
             border: 2px solid var(--hud-color);
             border-radius: 50%;
-            background: 
-                radial-gradient(transparent 30%, rgba(0, 243, 255, 0.2) 31%, transparent 32%),
-                radial-gradient(transparent 60%, rgba(0, 243, 255, 0.2) 61%, transparent 62%),
-                linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+            background: radial-gradient(transparent 30%, rgba(0, 243, 255, 0.1)),
+                        linear-gradient(0deg, transparent 49%, var(--hud-dim) 50%, transparent 51%),
+                        linear-gradient(90deg, transparent 49%, var(--hud-dim) 50%, transparent 51%);
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.2);
         }
 
         .radar-sweep {
             position: absolute;
-            top: 50%; left: 50%;
-            width: 50%; height: 50%;
-            background: linear-gradient(45deg, transparent 50%, rgba(0, 243, 255, 0.8) 100%);
-            transform-origin: top left;
-            animation: radarSweep 3s linear infinite;
-        }
-
-        .radar-dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: var(--alert-color);
+            inset: 0;
+            background: conic-gradient(from 0deg, transparent 70%, var(--hud-color));
             border-radius: 50%;
-            box-shadow: 0 0 5px var(--alert-color);
-            animation: dotBlink 2s infinite;
+            animation: spinSlow 3s linear infinite;
+            opacity: 0.5;
         }
 
-        .module-label {
-            font-family: 'Share Tech Mono';
-            color: var(--hud-color);
-            font-size: 20px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--hud-dim);
-            width: 100%;
-            text-align: center;
-            padding-bottom: 5px;
+        .radar-blip {
+            position: absolute;
+            width: 4px; 
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            box-shadow: 0 0 4px var(--matrix-green);
+            opacity: 0;
+            animation: blipFade 2s ease-out forwards;
         }
 
-        /* Center/Right: Timeline Module */
-        .timeline-module {
-            flex: 1;
+        .radar-blip.enemy {
+            background: var(--alert-color);
+            box-shadow: 0 0 6px var(--alert-color);
+            width: 6px; 
+            height: 6px;
+            animation: blipPulse 0.5s infinite alternate;
+        }
+
+        .scanner-warning {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--alert-color);
+            font-family: 'Black Ops One';
+            font-size: 12px;
+            background: rgba(255, 0, 0, 0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        @keyframes blipFade { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(2); } }
+        @keyframes blipPulse { 0% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* Center: Flight Controls */
+        .control-cluster {
+            flex: 2;
             height: 200px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
         }
 
-        .timeline-grid {
+        /* Main Launch Button */
+        .launch-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--hud-color);
+            color: var(--hud-color);
+            font-family: 'Black Ops One';
+            font-size: 32px;
+            padding: 15px 50px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            margin-bottom: 20px;
+        }
+
+        .launch-btn:hover {
+            background: var(--hud-color);
+            color: black;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* Mission Complete Button (Hidden initially) */
+        .complete-btn {
+            display: none; /* Toggled via JS */
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--matrix-green);
+            color: var(--matrix-green);
+            font-family: 'Black Ops One';
+            font-size: 40px;
+            padding: 20px 60px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 0 30px var(--matrix-green);
+            animation: pulseGreen 1s infinite alternate;
+            position: absolute;
+            bottom: 80px;
+            z-index: 200;
+        }
+
+        .complete-btn:hover {
+            background: var(--matrix-green);
+            color: black;
+            transform: scale(1.1);
+        }
+
+        /* Throttle / Status Indicators */
+        .status-panel {
             display: flex;
             gap: 20px;
-            height: 100%;
             margin-top: 10px;
         }
 
-        .mission-card {
-            flex: 1;
-            background: rgba(0, 243, 255, 0.05);
-            border: 1px solid var(--hud-dim);
+        .status-light {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            padding: 0 20px;
-            gap: 20px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            gap: 5px;
         }
 
-        .mission-card:hover {
-            background: rgba(0, 243, 255, 0.15);
-            border-color: var(--hud-color);
+        .light-bulb {
+            width: 40px;
+            height: 10px;
+            background: #333;
+            border: 1px solid #555;
         }
 
-        .mission-card::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0; width: 4px;
-            background: var(--hud-dim);
-        }
-
-        .mission-card:hover::before {
+        .light-bulb.active {
             background: var(--hud-color);
+            box-shadow: 0 0 10px var(--hud-color);
+        }
+        
+        .light-bulb.warn {
+            background: var(--warn-color);
+            box-shadow: 0 0 10px var(--warn-color);
         }
 
-        .card-id {
-            font-family: 'Black Ops One';
-            font-size: 32px;
-            color: var(--hud-dim);
+        .status-label {
+            font-family: 'Share Tech Mono';
+            font-size: 12px;
+            color: #888;
         }
-        .mission-card:hover .card-id { color: var(--hud-color); }
 
-        .card-info {
+        /* Right: Future Ops */
+        .future-ops-module {
+            width: 300px;
+            height: 180px;
             display: flex;
             flex-direction: column;
         }
 
-        .card-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
+        .ops-header {
+            font-family: 'Share Tech Mono';
+            color: var(--hud-color);
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--hud-dim);
         }
-        
-        .card-status {
+
+        .ops-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .ops-item {
+            display: flex;
+            justify-content: space-between;
             font-size: 14px;
             color: #aaa;
-            font-family: 'Share Tech Mono';
+            padding: 5px;
+            background: rgba(255,255,255,0.05);
         }
 
+        .ops-id { color: var(--hud-dim); font-weight: bold; }
+
         /* Animations */
-        @keyframes flowLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
-        @keyframes pulseTarget { 0% { box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); } 50% { box-shadow: 0 0 50px rgba(255, 51, 102, 0.8); } 100% { box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); } }
-        @keyframes radarSweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-        /* Entry Animations */
-        .node-wrapper { opacity: 0; animation: popIn 0.5s ease-out forwards; }
-        .node-wrapper:nth-child(1) { animation-delay: 0.5s; }
-        .node-wrapper:nth-child(3) { animation-delay: 1.5s; }
-        .node-wrapper:nth-child(5) { animation-delay: 2.5s; }
-        .node-wrapper:nth-child(7) { animation-delay: 3.5s; }
-
-        @keyframes popIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes pulseAlert { 0%, 100% { text-shadow: 0 0 30px var(--alert-color); opacity: 1; } 50% { text-shadow: 0 0 60px var(--alert-color); opacity: 0.8; } }
+        @keyframes pulseGreen { 0% { box-shadow: 0 0 20px var(--matrix-green); } 100% { box-shadow: 0 0 50px var(--matrix-green); } }
 
     </style>
 </head>
+
 <body>
+    <div class="transition-overlay"></div>
     <div class="cockpit-overlay"></div>
     <div class="cockpit-frame"></div>
     
-    <div class="world-viewport">
-        <div class="digital-terrain"></div>
+    <div class="viewport-container">
+        <div class="world-mover">
+            <div class="star-field"></div>
+            <div class="digital-terrain"></div>
+            <div id="particleSystem"></div>
+        </div>
     </div>
 
     <!-- Top HUD -->
     <div class="top-hud">
         <div class="mission-title">戰術演示：研究行動</div>
         <div class="coordinates">
-            TARGET: 零幻覺<br>
-            LAT: 34.592 | LNG: 12.404
+            <div class="target-highlight">TARGET: ZERO_HALLUCINATION</div>
+            <div class="nav-data">
+                LAT: <span id="lat">34.592</span> | LNG: <span id="lng">12.404</span> | ALT: <span id="alt">2500</span>
+            </div>
         </div>
     </div>
 
-    <!-- Center Viewport: The Process Chain -->
-    <div class="center-viewport">
-        <!-- Step 1 -->
-        <div class="node-wrapper">
-            <div class="hex-node">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            </div>
-            <div class="node-label">資料上傳</div>
+    <!-- Left: RPG Quest Panel -->
+    <div class="quest-panel">
+        <div class="quest-header">
+            <span>⚡ MISSION LOG</span>
         </div>
-
-        <div class="connect-line"></div>
-
-        <!-- Step 2 -->
-        <div class="node-wrapper">
-            <div class="hex-node">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        <div class="quest-list">
+            <div class="quest-item" id="q1">
+                <div class="quest-checkbox"></div>
+                <div class="quest-text">資料上傳</div>
             </div>
-            <div class="node-label">情報分析</div>
-        </div>
-
-        <div class="connect-line"></div>
-
-        <!-- Step 3 -->
-        <div class="node-wrapper">
-            <div class="hex-node">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            <div class="quest-item" id="q2">
+                <div class="quest-checkbox"></div>
+                <div class="quest-text">情報分析</div>
             </div>
-            <div class="node-label">精準提問</div>
-        </div>
-
-        <div class="connect-line"></div>
-
-        <!-- Step 4 -->
-        <div class="node-wrapper">
-            <div class="hex-node target">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <div class="quest-item" id="q3">
+                <div class="quest-checkbox"></div>
+                <div class="quest-text">精準提問</div>
             </div>
-            <div class="node-label" style="color: var(--alert-color);">來源鎖定</div>
+            <div class="quest-item" id="q4">
+                <div class="quest-checkbox"></div>
+                <div class="quest-text">來源鎖定</div>
+            </div>
         </div>
     </div>
 
-    <!-- Bottom Dashboard -->
+    <!-- Center: Target Reticle (Text Removed) -->
+    <div class="target-display">
+        <div class="reticle-ring"></div>
+        <!-- Text removed as requested -->
+    </div>
+
+    <!-- Bottom Dashboard: Controls -->
     <div class="dashboard-console">
-        <!-- Left: Active Radar -->
+        <!-- Left: Scanner -->
         <div class="module-frame radar-module">
-            <div class="module-label">區域掃描雷達</div>
+            <div style="width:100%; text-align:center; color:var(--hud-color); font-family:'Share Tech Mono'; margin-bottom:5px;">SCANNER</div>
             <div class="radar-screen">
                 <div class="radar-sweep"></div>
-                <div class="radar-dot" style="top: 30%; left: 70%;"></div>
-                <div class="radar-dot" style="top: 60%; left: 40%; animation-delay: 1s;"></div>
+                <div id="radarBlips"></div>
+                <div class="scanner-warning" id="scannerWarn">WARNING</div>
             </div>
         </div>
 
-        <!-- Right: Mission Timeline -->
-        <div class="module-frame timeline-module">
-            <div class="module-label">戰略部署隊列</div>
-            <div class="timeline-grid">
-                <!-- Week 2 -->
-                <div class="mission-card">
-                    <div class="card-id">02</div>
-                    <div class="card-info">
-                        <div class="card-title">數據分析協議</div>
-                        <div class="card-status">STATUS: PENDING</div>
-                    </div>
+        <!-- Center: Flight Controls -->
+        <div class="control-cluster">
+            <!-- Main Buttons -->
+            <button class="launch-btn" id="launchBtn" onclick="engageThrusters()">
+                ENGAGE THRUSTERS [啟動引擎]
+            </button>
+
+            <button class="complete-btn" id="completeBtn" onclick="completeMission()">
+                MISSION COMPLETE [任務完成]
+            </button>
+
+            <!-- Status Lights -->
+            <div class="status-panel">
+                <div class="status-light">
+                    <div class="light-bulb active" id="statusEng"></div>
+                    <div class="status-label">ENGINE</div>
                 </div>
-                <!-- Week 3 -->
-                <div class="mission-card">
-                    <div class="card-id">03</div>
-                    <div class="card-info">
-                        <div class="card-title">深潛行動執行</div>
-                        <div class="card-status">STATUS: LOCKED</div>
-                    </div>
+                <div class="status-light">
+                    <div class="light-bulb" id="statusThrust"></div>
+                    <div class="status-label">THRUST</div>
                 </div>
-                <!-- Week 4 -->
-                <div class="mission-card">
-                    <div class="card-id">04</div>
-                    <div class="card-info">
-                        <div class="card-title">事實查核部署</div>
-                        <div class="card-status">STATUS: STANDBY</div>
-                    </div>
+                <div class="status-light">
+                    <div class="light-bulb warn" id="statusWeap"></div>
+                    <div class="status-label">WEAPON</div>
+                </div>
+                <div class="status-light">
+                    <div class="light-bulb active" id="statusSys"></div>
+                    <div class="status-label">SYSTEM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Future Ops (Larger) -->
+        <div class="module-frame future-ops-module">
+            <div class="ops-header">
+                <span>DEPLOYMENT QUEUE</span>
+                <span style="float:right; color:var(--matrix-green)">ONLINE</span>
+            </div>
+            <div class="ops-list">
+                <div class="ops-item">
+                    <span class="ops-id">[02]</span>
+                    <span>數據分析協議</span>
+                    <span>PENDING</span>
+                </div>
+                <div class="ops-item">
+                    <span class="ops-id">[03]</span>
+                    <span>深潛行動執行</span>
+                    <span>LOCKED</span>
+                </div>
+                <div class="ops-item">
+                    <span class="ops-id">[04]</span>
+                    <span>事實查核部署</span>
+                    <span>STANDBY</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Flight & Particle System ---
+            const container = document.getElementById('particleSystem');
+            const world = document.querySelector('.world-mover');
+            const radarScreen = document.getElementById('radarBlips');
+            
+            // Navigation Variables
+            const latEl = document.getElementById('lat');
+            const lngEl = document.getElementById('lng');
+            const altEl = document.getElementById('alt');
+            let lat = 34.592;
+            let lng = 12.404;
+
+            // Flight Physics
+            let isHyperdrive = false; // Added missing declaration
+            let currentSpeed = 0.1; // Start static
+            let targetSpeed = 0.1;
+            let acceleration = 0.05; // Smooth factor
+            
+            let flightX = 0; 
+            let flightY = 0; 
+            let targetX = 0;
+            let targetY = 0;
+
+            // Particle Pool
+            const particles = [];
+            const MAX_PARTICLES = 300; // Increased density
+
+            class Particle {
+                constructor() {
+                    this.el = document.createElement('div');
+                    this.el.classList.add('particle');
+                    if (container) container.appendChild(this.el);
+                    this.reset();
+                }
+
+                reset() {
+                    // Spawn deep in Z
+                    this.z = -4000 - Math.random() * 6000; 
+                    
+                    // Spawn in a cone towards viewer
+                    // Use Gaussian-like distribution for more center focus
+                    const spread = 5000;
+                    const r = (Math.random() + Math.random() + Math.random()) / 3; // Bell curve
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = r * spread;
+                    
+                    this.x = Math.cos(angle) * dist;
+                    this.y = Math.sin(angle) * dist * 0.6; // Wider aspect ratio
+                    
+                    // Rotation (Self-spin for rocks)
+                    this.spin = Math.random() * 360;
+                    this.spinSpeed = (Math.random() - 0.5) * 5;
+                    
+                    // Types
+                    const rand = Math.random();
+                    this.el.className = 'particle';
+                    this.el.style.clipPath = 'none'; 
+                    this.el.style.background = '';
+                    this.el.style.boxShadow = '';
+                    this.opacity = 1;
+                    
+                    if (rand > 0.98) { // Rocks (Rarer)
+                        this.type = 'rock';
+                        this.el.classList.add('rock');
+                        this.baseScale = 0.8 + Math.random() * 2;
+                        // Random polygon
+                        const points = [];
+                        const sides = 5 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < sides; i++) {
+                            const angle = (i / sides) * Math.PI * 2;
+                            const r = 30 + Math.random() * 20; 
+                            const px = 50 + Math.cos(angle) * r + '%';
+                            const py = 50 + Math.sin(angle) * r + '%';
+                            points.push(`${px} ${py}`);
+                        }
+                        this.el.style.clipPath = `polygon(${points.join(',')})`;
+                        this.el.style.background = `hsl(0, 0%, ${20 + Math.random() * 10}%)`; 
+                        
+                    } else if (rand > 0.95) { // Bolts
+                        this.type = 'bolt';
+                        this.el.classList.add('bolt');
+                        this.baseScale = 1;
+                    } else if (rand > 0.7) { // Debris
+                        this.type = 'debris';
+                        this.el.classList.add('debris');
+                        this.baseScale = 0.5 + Math.random();
+                    } else { // Stars
+                        this.type = 'star';
+                        this.el.classList.add('star');
+                        // Varied size and opacity for depth
+                        this.baseScale = 0.2 + Math.random() * 1.5; 
+                        this.opacity = 0.1 + Math.random() * 0.9;
+                    }
+                    
+                    this.active = true;
+                    this.updateTransform(2); // Init transform
+                }
+
+                update(speed) {
+                    if (!this.active) return;
+
+                    // Move Z forward
+                    let moveSpeed = speed;
+                    if (this.type === 'star') moveSpeed *= 0.8; 
+                    if (this.type === 'bolt') moveSpeed *= 1.5;
+
+                    this.z += moveSpeed * 20; 
+                    this.spin += this.spinSpeed;
+                    
+                    if (this.z > 500) { 
+                        this.reset();
+                        if (this.type === 'rock' && isHyperdrive && Math.random() > 0.8) {
+                            shakeScreen();
+                        }
+                    }
+                    this.updateTransform(speed);
+                }
+
+                updateTransform(speed) {
+                    // 1. Radial Rotation (The "Warp Tunnel" Effect)
+                    // Calculate angle from center (0,0)
+                    const angle = Math.atan2(this.y, this.x); // Radians
+                    const angleDeg = angle * (180 / Math.PI);
+                    
+                    let stretch = 1;
+                    if (this.type !== 'rock') {
+                        stretch = 1 + (speed * 0.5); 
+                    }
+                    
+                    let transform = `translate3d(${this.x}px, ${this.y}px, ${this.z}px)`;
+                    
+                    if (this.type === 'rock') {
+                        transform += ` rotate(${this.spin}deg) scale(${this.baseScale})`;
+                    } else {
+                        transform += ` rotate(${angleDeg}deg) scaleX(${stretch * this.baseScale}) scaleY(${this.baseScale})`;
+                    }
+                    
+                    this.el.style.transform = transform;
+                    
+                    // Fog
+                    let op = this.opacity;
+                    if (this.z < -3000) op = 0;
+                    else if (this.z < -1000) op = op * ((this.z + 3000) / 2000);
+                    
+                    this.el.style.opacity = op;
+                }
+            }
+
+            // Init Pool
+            if (container) {
+                for(let i=0; i<MAX_PARTICLES; i++) {
+                    particles.push(new Particle());
+                    // Pre-warm positions
+                    particles[i].z = -4000 + Math.random() * 4500;
+                }
+            }
+
+            function gameLoop() {
+                // Smooth Speed
+                currentSpeed += (targetSpeed - currentSpeed) * acceleration;
+
+                if (isHyperdrive) { // Active Dodge
+                    // Random walk for target
+                    targetX += (Math.random() - 0.5) * 150;
+                    targetY += (Math.random() - 0.5) * 80;
+                    
+                    // Clamp limits
+                    targetX = Math.max(-1200, Math.min(1200, targetX));
+                    targetY = Math.max(-600, Math.min(600, targetY));
+                } else {
+                    // Recenter
+                    targetX *= 0.98;
+                    targetY *= 0.98;
+                }
+
+                // Smooth follow
+                flightX += (targetX - flightX) * 0.05;
+                flightY += (targetY - flightY) * 0.05;
+
+                // Camera Movement (World moves opposite)
+                if (world) {
+                    const yaw = -flightX * 0.02;   
+                    const pitch = flightY * 0.02;  
+                    const roll = -flightX * 0.03; 
+                    
+                    // Combine Translation (Dodging) and Rotation (Banking)
+                    world.style.transform = `translate3d(${-flightX}px, ${flightY}px, 0) rotateY(${yaw}deg) rotateX(${pitch}deg) rotateZ(${roll}deg)`;
+                }
+
+                // Update Particles
+                particles.forEach(p => p.update(currentSpeed));
+
+                // Nav Data
+                updateNavData(currentSpeed, flightY);
+
+                // Random Radar Blips
+                if (Math.random() > 0.97) createRadarBlip();
+
+                requestAnimationFrame(gameLoop);
+            }
+            gameLoop();
+
+            function shakeScreen() {
+                document.body.classList.remove('shake');
+                void document.body.offsetWidth; 
+                document.body.classList.add('shake');
+            }
+
+            function createRadarBlip() {
+                if (!radarScreen) return;
+                const blip = document.createElement('div');
+                blip.className = 'radar-blip';
+                
+                // Random pos (polar to Cartesian for circular distribution)
+                const angle = Math.random() * Math.PI * 2;
+                const r = Math.random() * 45; // % radius
+                const rx = 50 + Math.cos(angle) * r; 
+                const ry = 50 + Math.sin(angle) * r;
+                
+                blip.style.left = rx + '%';
+                blip.style.top = ry + '%';
+                
+                // Enemy Chance
+                if (Math.random() > 0.7) {
+                    blip.classList.add('enemy');
+                    triggerScannerWarning();
+                }
+                
+                radarScreen.appendChild(blip);
+                setTimeout(() => blip.remove(), 2000);
+            }
+
+            function triggerScannerWarning() {
+                const warn = document.getElementById('scannerWarn');
+                if (warn) {
+                    warn.style.opacity = 1;
+                    setTimeout(() => warn.style.opacity = 0, 800);
+                }
+            }
+
+            // --- Navigation Data Logic ---
+            function updateNavData(speed, altitudeOffset) {
+                // Move "forward" means changing Lat/Lng continuously
+                const speedFactor = speed * 0.0005;
+                lat += speedFactor;
+                lng += speedFactor * 0.5; 
+                
+                // Altitude based on "dodging" height + base
+                let currentAlt = 2500 - (altitudeOffset * 2); 
+                
+                if (latEl) latEl.textContent = lat.toFixed(4);
+                if (lngEl) lngEl.textContent = lng.toFixed(4);
+                if (altEl) altEl.textContent = Math.floor(currentAlt);
+            }
+
+            // Global Functions
+            window.engageThrusters = function() {
+                isHyperdrive = true;
+                targetSpeed = 5; // High speed rush
+                document.body.classList.add('hyperdrive');
+                
+                // UI Updates
+                const launchBtn = document.getElementById('launchBtn');
+                const completeBtn = document.getElementById('completeBtn');
+                if (launchBtn) launchBtn.style.display = 'none';
+                if (completeBtn) completeBtn.style.display = 'block';
+                
+                const statusThrust = document.getElementById('statusThrust');
+                if (statusThrust) {
+                    statusThrust.classList.add('active');
+                    statusThrust.style.boxShadow = "0 0 20px #00f3ff";
+                }
+            };
+
+            window.completeMission = function() {
+                isHyperdrive = false;
+                targetSpeed = 0.1; // Slow down to static
+                
+                document.body.classList.remove('hyperdrive');
+                
+                // Allow grid to keep moving slowly
+                const terrain = document.querySelector('.digital-terrain');
+                if (terrain) terrain.style.animationDuration = '20s'; 
+
+                const btn = document.getElementById('completeBtn');
+                if (btn) {
+                    btn.innerHTML = "OBJECTIVE SECURED";
+                    btn.style.pointerEvents = 'none';
+                    btn.style.background = "var(--matrix-green)";
+                    btn.style.color = "black";
+                }
+
+                // Checklist
+                const items = ['q1', 'q2', 'q3', 'q4'];
+                let index = 0;
+                function checkItem() {
+                    if (index >= items.length) return;
+                    const el = document.getElementById(items[index]);
+                    if (el) {
+                        el.classList.add('completed');
+                        const checkbox = el.querySelector('.quest-checkbox');
+                        if (checkbox) checkbox.innerHTML = '✓';
+                    }
+                    index++;
+                    setTimeout(checkItem, 300);
+                }
+                checkItem();
+            };
+        });
+    </script>
 </body>
 </html>
