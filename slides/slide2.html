@@ -1,815 +1,1395 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1920, height=1080">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
     <title>Slide 2</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;700;900&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;700;900&display=swap");
 
-        :root {
-            --boot-delay: 10s;
-        }
+      :root {
+        --boot-delay: 10s;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            width: 1920px;
-            height: 1080px;
-            background: #050505;
-            font-family: 'Share Tech Mono', 'Noto Sans TC', monospace;
-            overflow: hidden;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            --boot-delay: 10s; /* Default delay */
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1920px;
+        height: 1080px;
+        background: #050505;
+        font-family: "Share Tech Mono", "Noto Sans TC", monospace;
+        overflow: hidden;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        --boot-delay: 10s; /* Default delay */
+      }
 
-        body.skip-intro {
-            --boot-delay: 0.5s;
-        }
+      body.skip-intro {
+        --boot-delay: 0.5s;
+      }
 
-        body.skip-intro .loading-screen {
-            display: none;
-        }
+      body.skip-intro .loading-screen {
+        display: none;
+      }
 
-        /* --- 1. Extended Loading Sequence (10s) --- */
-        .loading-screen {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: glitch-out 0.5s cubic-bezier(1, 0, 0, 1) forwards var(--boot-delay);
-            pointer-events: none;
-        }
+      /* --- 1. Extended Loading Sequence (10s) --- */
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: glitch-out 0.5s cubic-bezier(1, 0, 0, 1) forwards
+          var(--boot-delay);
+        pointer-events: none;
+      }
 
-        .loading-text {
-            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
-            font-size: 32px; /* Reduced slightly */
-            color: #00ff00;
-            text-align: left;
-            width: 1100px; /* Reduced width */
-            height: 800px; /* Increased height */
-            overflow: hidden;
-            white-space: pre-wrap;
-            border: 2px solid #003300;
-            padding: 40px;
-            background: rgba(0, 15, 0, 0.98);
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.15);
-            line-height: 1.4; /* More readable spacing */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* Start from top */
-        }
+      .loading-text {
+        font-family: "Orbitron", "Noto Sans TC", sans-serif;
+        font-size: 32px; /* Reduced slightly */
+        color: #00ff00;
+        text-align: left;
+        width: 1100px; /* Reduced width */
+        height: 800px; /* Increased height */
+        overflow: hidden;
+        white-space: pre-wrap;
+        border: 2px solid #003300;
+        padding: 40px;
+        background: rgba(0, 15, 0, 0.98);
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.15);
+        line-height: 1.4; /* More readable spacing */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Start from top */
+      }
 
-        .loading-line {
-            opacity: 0;
-            margin-bottom: 15px; /* Better spacing */
-            animation: typeLine 0.1s forwards;
-            text-shadow: 0 0 5px #00ff00;
-            flex-shrink: 0;
-        }
+      .loading-line {
+        opacity: 0;
+        margin-bottom: 15px; /* Better spacing */
+        animation: typeLine 0.1s forwards;
+        text-shadow: 0 0 5px #00ff00;
+        flex-shrink: 0;
+      }
 
-        /* Staggered typing effect (Slower) */
-        .l1 { animation-delay: 0.5s; }
-        .l2 { animation-delay: 1.5s; }
-        .l3 { animation-delay: 2.5s; }
-        .l4 { animation-delay: 3.5s; }
-        .l5 { animation-delay: 4.5s; }
-        .l6 { animation-delay: 5.5s; }
-        .l7 { animation-delay: 6.5s; }
-        .l8 { animation-delay: 7.5s; color: #ef4444; }
-        .l9 { animation-delay: 8.5s; color: #fbbf24; }
-        .l10 { animation-delay: 9.2s; color: #fbbf24; font-weight: bold; text-shadow: 0 0 20px #fbbf24; }
+      /* Staggered typing effect (Slower) */
+      .l1 {
+        animation-delay: 0.5s;
+      }
+      .l2 {
+        animation-delay: 1.5s;
+      }
+      .l3 {
+        animation-delay: 2.5s;
+      }
+      .l4 {
+        animation-delay: 3.5s;
+      }
+      .l5 {
+        animation-delay: 4.5s;
+      }
+      .l6 {
+        animation-delay: 5.5s;
+      }
+      .l7 {
+        animation-delay: 6.5s;
+      }
+      .l8 {
+        animation-delay: 7.5s;
+        color: #ef4444;
+      }
+      .l9 {
+        animation-delay: 8.5s;
+        color: #fbbf24;
+      }
+      .l10 {
+        animation-delay: 9.2s;
+        color: #fbbf24;
+        font-weight: bold;
+        text-shadow: 0 0 20px #fbbf24;
+      }
 
-        @keyframes typeLine { to { opacity: 1; } }
-        @keyframes glitch-out {
-            0% { clip-path: inset(0 0 0 0); }
-            100% { clip-path: inset(50% 0 50% 0); opacity: 0; visibility: hidden; }
+      @keyframes typeLine {
+        to {
+          opacity: 1;
         }
+      }
+      @keyframes glitch-out {
+        0% {
+          clip-path: inset(0 0 0 0);
+        }
+        100% {
+          clip-path: inset(50% 0 50% 0);
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
 
-        /* --- 2. HUD & Gaming UI --- */
-        .hud {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1000;
-            padding: 40px;
-            display: flex;
-            justify-content: space-between;
-            opacity: 0;
-            animation: hudBoot 1s forwards calc(var(--boot-delay) + 0.5s);
-        }
+      /* --- 2. HUD & Gaming UI --- */
+      .hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1000;
+        padding: 40px;
+        display: flex;
+        justify-content: space-between;
+        opacity: 0;
+        animation: hudBoot 1s forwards calc(var(--boot-delay) + 0.5s);
+      }
 
-        .hp-bar-container {
-            width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+      .hp-bar-container {
+        width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
 
-        .hp-label {
-            font-family: 'Black Ops One', 'Noto Sans TC';
-            font-size: 32px;
-            text-shadow: 0 0 10px currentColor;
-        }
+      .hp-label {
+        font-family: "Black Ops One", "Noto Sans TC";
+        font-size: 32px;
+        text-shadow: 0 0 10px currentColor;
+      }
 
-        .hp-bar {
-            width: 100%;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            transform: skewX(-20deg);
-        }
+      .hp-bar {
+        width: 100%;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        transform: skewX(-20deg);
+      }
 
-        .hp-fill {
-            height: 100%;
-            width: 100%;
-            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-            overflow: hidden;
-        }
+      .hp-fill {
+        height: 100%;
+        width: 100%;
+        transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        position: relative;
+        overflow: hidden;
+      }
 
-        .hp-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-            animation: shimmer 2s infinite;
-        }
+      .hp-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        animation: shimmer 2s infinite;
+      }
 
-        .p1-hp .hp-fill { background: #ef4444; box-shadow: 0 0 20px #ef4444; animation: p1Damage 20s forwards calc(var(--boot-delay) + 2s); }
-        .p2-hp .hp-fill { background: #0ea5e9; box-shadow: 0 0 20px #0ea5e9; }
+      .p1-hp .hp-fill {
+        background: #ef4444;
+        box-shadow: 0 0 20px #ef4444;
+        animation: p1Damage 20s forwards calc(var(--boot-delay) + 2s);
+      }
+      .p2-hp .hp-fill {
+        background: #0ea5e9;
+        box-shadow: 0 0 20px #0ea5e9;
+      }
 
-        .hp-label-p1 { color: #ef4444; }
-        .hp-label-p2 { color: #0ea5e9; text-align: right; }
+      .hp-label-p1 {
+        color: #ef4444;
+      }
+      .hp-label-p2 {
+        color: #0ea5e9;
+        text-align: right;
+      }
 
-        .fight-announcer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-family: 'Black Ops One';
-            font-size: 200px;
-            color: #fbbf24;
-            text-shadow: 0 0 50px #fbbf24, 4px 4px 0 #000;
-            z-index: 2000;
-            pointer-events: none;
-            animation: announceFight 2s forwards calc(var(--boot-delay) + 0.5s);
-        }
+      .fight-announcer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        font-family: "Black Ops One";
+        font-size: 200px;
+        color: #fbbf24;
+        text-shadow: 0 0 50px #fbbf24, 4px 4px 0 #000;
+        z-index: 2000;
+        pointer-events: none;
+        animation: announceFight 2s forwards calc(var(--boot-delay) + 0.5s);
+      }
 
-        /* --- 3. Arena --- */
-        .arena {
-            position: absolute;
-            inset: 0;
-            background: #0a0a0a;
-            perspective: 1000px;
-            overflow: hidden;
-        }
+      /* --- 3. Arena --- */
+      .arena {
+        position: absolute;
+        inset: 0;
+        background: #0a0a0a;
+        perspective: 1000px;
+        overflow: hidden;
+      }
 
-        .floor-grid {
-            position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 0, 0.1) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 2px, transparent 2px);
-            background-size: 100px 100px;
-            transform: rotateX(60deg);
-            animation: scrollGrid 20s linear infinite;
-        }
+      .floor-grid {
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: linear-gradient(
+            rgba(0, 255, 0, 0.1) 2px,
+            transparent 2px
+          ),
+          linear-gradient(90deg, rgba(0, 255, 0, 0.1) 2px, transparent 2px);
+        background-size: 100px 100px;
+        transform: rotateX(60deg);
+        animation: scrollGrid 20s linear infinite;
+      }
 
-        /* --- 4. Mechs (Enhanced) --- */
-        .mech {
-            position: absolute;
-            bottom: 200px;
-            width: 400px;
-            height: 500px;
-            z-index: 100;
-            transition: transform 0.2s;
-        }
+      /* --- 4. Mechs (Enhanced) --- */
+      .mech {
+        position: absolute;
+        bottom: 200px;
+        width: 400px;
+        height: 500px;
+        z-index: 100;
+        transition: transform 0.2s;
+      }
 
-        .mech-p1 { 
-            left: -600px; 
-            animation: p1Sequence 20s forwards var(--boot-delay);
-        }
-        
-        .mech-p2 { 
-            right: -600px; 
-            animation: p2Sequence 20s forwards var(--boot-delay);
-        }
+      .mech-p1 {
+        left: -600px;
+        animation: p1Sequence 20s forwards var(--boot-delay);
+      }
 
-        /* P1: Heavy Industrial Mech */
-        .mech-p1 .head {
-            position: absolute;
-            top: 0; left: 120px; width: 160px; height: 100px;
-            background: #7f1d1d;
-            clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
-            border-bottom: 2px solid #000;
-        }
-        .mech-p1 .eye {
-            position: absolute;
-            top: 40px; left: 160px; width: 80px; height: 20px;
-            background: #ff0000;
-            box-shadow: 0 0 20px #ff0000;
-            animation: scan 2s infinite alternate;
-        }
-        .mech-p1 .torso {
-            position: absolute;
-            top: 100px; left: 50px; width: 300px; height: 250px;
-            background: linear-gradient(180deg, #991b1b, #450a0a);
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-            border: 2px solid #ef4444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mech-p1 .mech-label {
-            font-family: 'Black Ops One';
-            font-size: 100px;
-            color: rgba(0,0,0,0.5);
-            font-weight: bold;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.2);
-        }
+      .mech-p2 {
+        right: -600px;
+        animation: p2Sequence 20s forwards var(--boot-delay);
+      }
 
-        .mech-p1 .arm-l {
-            position: absolute;
-            top: 120px; left: -40px; width: 80px; height: 200px;
-            background: #555;
-            border-right: 4px solid #333;
-        }
-        .mech-p1 .arm-r { /* Cannon */
-            position: absolute;
-            top: 150px; right: -60px; width: 120px; height: 80px;
-            background: #333;
-            border: 2px solid #ef4444;
-        }
-        .mech-p1 .leg-l {
-            position: absolute;
-            bottom: 0; left: 60px; width: 100px; height: 150px;
-            background: #333;
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-        }
-        .mech-p1 .leg-r {
-            position: absolute;
-            bottom: 0; right: 60px; width: 100px; height: 150px;
-            background: #333;
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-        }
+      /* P1: Heavy Industrial Mech */
+      .mech-p1 .head {
+        position: absolute;
+        top: 0;
+        left: 120px;
+        width: 160px;
+        height: 100px;
+        background: #7f1d1d;
+        clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+        border-bottom: 2px solid #000;
+      }
+      .mech-p1 .eye {
+        position: absolute;
+        top: 40px;
+        left: 160px;
+        width: 80px;
+        height: 20px;
+        background: #ff0000;
+        box-shadow: 0 0 20px #ff0000;
+        animation: scan 2s infinite alternate;
+      }
+      .mech-p1 .torso {
+        position: absolute;
+        top: 100px;
+        left: 50px;
+        width: 300px;
+        height: 250px;
+        background: linear-gradient(180deg, #991b1b, #450a0a);
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        border: 2px solid #ef4444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mech-p1 .mech-label {
+        font-family: "Black Ops One";
+        font-size: 100px;
+        color: rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+        text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
+      }
 
-        /* P2: NotebookLM Mech (Blue/White) */
-        .mech-p2 .head {
-            position: absolute;
-            top: 0; left: 120px; width: 160px; height: 100px;
-            background: #0c4a6e;
-            clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
-            border-bottom: 2px solid #000;
+      .mech-p1 .arm-l {
+        position: absolute;
+        top: 120px;
+        left: -40px;
+        width: 80px;
+        height: 200px;
+        background: #555;
+        border-right: 4px solid #333;
+      }
+      .mech-p1 .arm-r {
+        /* Cannon */
+        position: absolute;
+        top: 150px;
+        right: -60px;
+        width: 120px;
+        height: 80px;
+        background: #333;
+        border: 2px solid #ef4444;
+      }
+      .mech-p1 .leg-l {
+        position: absolute;
+        bottom: 0;
+        left: 60px;
+        width: 100px;
+        height: 150px;
+        background: #333;
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+      }
+      .mech-p1 .leg-r {
+        position: absolute;
+        bottom: 0;
+        right: 60px;
+        width: 100px;
+        height: 150px;
+        background: #333;
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+      }
+
+      /* P2: NotebookLM Mech (Blue/White) */
+      .mech-p2 .head {
+        position: absolute;
+        top: 0;
+        left: 120px;
+        width: 160px;
+        height: 100px;
+        background: #0c4a6e;
+        clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+        border-bottom: 2px solid #000;
+      }
+      .mech-p2 .eye {
+        position: absolute;
+        top: 40px;
+        left: 160px;
+        width: 80px;
+        height: 20px;
+        background: #0ea5e9;
+        box-shadow: 0 0 20px #0ea5e9;
+        animation: scan 2s infinite alternate-reverse;
+      }
+      .mech-p2 .torso {
+        position: absolute;
+        top: 100px;
+        left: 50px;
+        width: 300px;
+        height: 250px;
+        background: linear-gradient(180deg, #075985, #0c4a6e);
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        border: 2px solid #0ea5e9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mech-p2 .mech-body {
+        width: 100%;
+        height: 100%;
+        /* Removed flex display to avoid layout issues with absolute children */
+      }
+      .mech-p2 .arm-l {
+        position: absolute;
+        top: 150px;
+        left: -60px;
+        width: 120px;
+        height: 80px;
+        background: #cbd5e1;
+        border: 2px solid #0ea5e9;
+      }
+      .mech-p2 .arm-r {
+        position: absolute;
+        top: 120px;
+        right: -40px;
+        width: 80px;
+        height: 200px;
+        top: 150px;
+        right: -60px;
+        width: 120px;
+        height: 80px;
+        background: #cbd5e1;
+        border: 2px solid #0ea5e9;
+      }
+      .mech-p2 .leg-l {
+        position: absolute;
+        bottom: 0;
+        left: 60px;
+        width: 100px;
+        height: 150px;
+        background: #334155;
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+      }
+      .mech-p2 .leg-r {
+        position: absolute;
+        bottom: 0;
+        right: 60px;
+        width: 100px;
+        height: 150px;
+        background: #334155;
+        clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+      }
+
+      .notebook-logo {
+        width: 180px;
+        height: 180px;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        animation: pulseCore 2s infinite;
+      }
+
+      .notebook-logo path {
+        stroke: white;
+        fill: none;
+        stroke-linecap: round;
+        stroke-width: 12;
+        opacity: 0.9;
+      }
+
+      /* Subtle opacity layering instead of colors */
+      .notebook-logo path:nth-child(1) {
+        opacity: 0.6;
+      }
+      .notebook-logo path:nth-child(2) {
+        opacity: 0.8;
+      }
+      .notebook-logo path:nth-child(3) {
+        opacity: 1;
+      }
+
+      /* --- 5. Combat Effects & Text --- */
+      /* Round 1 Text */
+      .t1-p1 {
+        color: #ef4444;
+        border-color: #ef4444;
+        top: 40%;
+        left: 30%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 3s);
+      }
+      .t1-p2 {
+        color: #0ea5e9;
+        border-color: #0ea5e9;
+        top: 40%;
+        right: 30%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 4s);
+      }
+
+      /* Round 2 Text */
+      .t2-p1 {
+        color: #ef4444;
+        border-color: #ef4444;
+        top: 30%;
+        left: 40%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 7s);
+      }
+      .t2-p2 {
+        color: #0ea5e9;
+        border-color: #0ea5e9;
+        top: 30%;
+        right: 40%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 8s);
+      }
+
+      /* Round 3 Text */
+      .t3-p1 {
+        color: #ef4444;
+        border-color: #ef4444;
+        top: 35%;
+        left: 35%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 11s);
+      }
+      .t3-p2 {
+        color: #0ea5e9;
+        border-color: #0ea5e9;
+        top: 35%;
+        right: 35%;
+        animation: popText 3s forwards calc(var(--boot-delay) + 12s);
+      }
+
+      /* Round 4: Ultimate Move Text */
+      .t4-win {
+        color: #fbbf24;
+        border: 10px solid #fbbf24;
+        background: rgba(0, 0, 0, 0.9);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        font-size: 140px; /* Huge text */
+        z-index: 3000;
+        padding: 60px 100px;
+        box-shadow: 0 0 100px #fbbf24;
+        animation: ultimateTextImpact 0.5s
+          cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards
+          calc(var(--boot-delay) + 16s);
+        white-space: nowrap;
+      }
+
+      /* Ultimate Beam Effect */
+      .ultimate-beam {
+        position: absolute;
+        top: 50%;
+        right: 300px;
+        transform: translateY(-50%);
+        height: 300px; /* Slightly thinner core */
+        width: 0;
+        /* Plasma Gradient */
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(200, 240, 255, 1) 10%,
+          rgba(14, 165, 233, 0.8) 30%,
+          rgba(56, 189, 248, 0.4) 60%,
+          transparent 100%
+        );
+        background-size: 200% 100%;
+        box-shadow: 0 0 30px #fff, 0 0 60px #0ea5e9, 0 0 120px #0ea5e9,
+          inset 0 0 40px rgba(255, 255, 255, 0.8);
+        z-index: 150;
+        opacity: 0;
+        border-radius: 150px 0 0 150px;
+        filter: blur(2px) contrast(1.2);
+        animation: fireBeam 1s forwards calc(var(--boot-delay) + 15s),
+          beamFlow 0.2s linear infinite;
+      }
+
+      .ultimate-beam::after {
+        content: "";
+        position: absolute;
+        top: 20%;
+        left: 0;
+        width: 100%;
+        height: 60%;
+        background: linear-gradient(90deg, white, transparent);
+        filter: blur(10px);
+        opacity: 0.8;
+      }
+
+      @keyframes beamFlow {
+        0% {
+          background-position: 0% 50%;
         }
-        .mech-p2 .eye {
-            position: absolute;
-            top: 40px; left: 160px; width: 80px; height: 20px;
-            background: #0ea5e9;
-            box-shadow: 0 0 20px #0ea5e9;
-            animation: scan 2s infinite alternate-reverse;
+        100% {
+          background-position: 100% 50%;
         }
-        .mech-p2 .torso {
-            position: absolute;
-            top: 100px; left: 50px; width: 300px; height: 250px;
-            background: linear-gradient(180deg, #075985, #0c4a6e);
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-            border: 2px solid #0ea5e9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+      }
+
+      .screen-flash {
+        position: fixed;
+        inset: 0;
+        background: white;
+        z-index: 5000;
+        opacity: 0;
+        pointer-events: none;
+        animation: flash 0.5s forwards calc(var(--boot-delay) + 15.2s);
+      }
+
+      /* Post Match Menu */
+      .post-match-menu {
+        position: absolute;
+        top: 70%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        gap: 40px;
+        z-index: 4000;
+        opacity: 0;
+        animation: fadeInMenu 1s forwards calc(var(--boot-delay) + 19s);
+      }
+
+      .menu-btn {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #fbbf24;
+        color: #fbbf24;
+        font-family: "Black Ops One", "Noto Sans TC";
+        font-size: 32px;
+        padding: 20px 60px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+      }
+
+      .menu-btn:hover {
+        background: #fbbf24;
+        color: #000;
+        box-shadow: 0 0 50px rgba(251, 191, 36, 0.6);
+        transform: scale(1.1);
+      }
+
+      /* Battle Summary Table (Larger) */
+      .battle-summary {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 1400px; /* Much wider */
+        background: rgba(5, 5, 5, 0.95);
+        border: 4px solid #fbbf24;
+        padding: 80px;
+        z-index: 5000;
+        display: none; /* Hidden by default, shown via JS */
+        font-family: "Noto Sans TC", sans-serif;
+        text-align: center;
+        box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+      }
+
+      .summary-title {
+        font-size: 72px; /* Larger title */
+        color: #fbbf24;
+        margin-bottom: 60px;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        border-bottom: 4px solid #fbbf24;
+        padding-bottom: 20px;
+        text-shadow: 0 0 30px #fbbf24;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        font-size: 42px; /* Larger text */
+        border-bottom: 1px solid #333;
+        padding-bottom: 20px;
+      }
+
+      .summary-label {
+        color: #9ca3af;
+        text-align: left;
+        width: 30%;
+      }
+      .summary-val-p1 {
+        color: #ef4444;
+        text-decoration: line-through;
+        width: 30%;
+      }
+      .summary-val-p2 {
+        color: #0ea5e9;
+        font-weight: 900;
+        width: 30%;
+        text-shadow: 0 0 20px #0ea5e9;
+      }
+
+      .summary-header-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        font-size: 48px;
+        font-family: "Black Ops One", "Noto Sans TC";
+        border-bottom: 2px solid #fbbf24;
+        padding-bottom: 10px;
+      }
+
+      .summary-header-p1 {
+        color: #ef4444;
+        width: 30%;
+      }
+      .summary-header-p2 {
+        color: #0ea5e9;
+        width: 30%;
+        text-shadow: 0 0 20px #0ea5e9;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: transparent;
+        border: none;
+        color: #fbbf24;
+        font-size: 60px;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.3s;
+      }
+      .close-btn:hover {
+        color: white;
+      }
+
+      /* --- Animation Sequences (Updated for Ultimate) --- */
+
+      /* P1 Sequence: Enter -> Shoot -> Rush -> Recoil -> Obliterated */
+      @keyframes p1Sequence {
+        0% {
+          left: -600px;
         }
-        .mech-p2 .mech-body {
-            width: 100%;
-            height: 100%;
-            /* Removed flex display to avoid layout issues with absolute children */
+        10% {
+          left: 100px;
         }
-        .mech-p2 .arm-l { 
-            position: absolute;
-            top: 150px; left: -60px; width: 120px; height: 80px;
-            background: #cbd5e1;
-            border: 2px solid #0ea5e9;
+        20% {
+          transform: translateX(0);
         }
-        .mech-p2 .arm-r { 
-            position: absolute;
-            top: 120px; right: -40px; width: 80px; height: 200px;
-            top: 150px; right: -60px; width: 120px; height: 80px;
-            background: #cbd5e1;
-            border: 2px solid #0ea5e9;
+        25% {
+          transform: translateX(50px);
         }
-        .mech-p2 .leg-l {
-            position: absolute;
-            bottom: 0; left: 60px; width: 100px; height: 150px;
-            background: #334155;
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        30% {
+          transform: translateX(0);
         }
-        .mech-p2 .leg-r {
-            position: absolute;
-            bottom: 0; right: 60px; width: 100px; height: 150px;
-            background: #334155;
-            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        40% {
+          left: 100px;
         }
-
-        .notebook-logo {
-            width: 180px;
-            height: 180px;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-            animation: pulseCore 2s infinite;
+        45% {
+          left: 600px;
+          transform: scale(1.2);
         }
-
-        .notebook-logo path {
-            stroke: white;
-            fill: none;
-            stroke-linecap: round;
-            stroke-width: 12;
-            opacity: 0.9;
+        50% {
+          left: 400px;
+          transform: scale(1);
         }
-
-        /* Subtle opacity layering instead of colors */
-        .notebook-logo path:nth-child(1) { opacity: 0.6; }
-        .notebook-logo path:nth-child(2) { opacity: 0.8; }
-        .notebook-logo path:nth-child(3) { opacity: 1.0; }
-
-        /* --- 5. Combat Effects & Text --- */
-        /* Round 1 Text */
-        .t1-p1 { 
-            color: #ef4444; border-color: #ef4444; top: 40%; left: 30%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 3s); 
+        60% {
+          transform: translateX(0);
         }
-        .t1-p2 { 
-            color: #0ea5e9; border-color: #0ea5e9; top: 40%; right: 30%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 4s); 
+        65% {
+          transform: translateX(30px);
+        } /* Hit 3 */
+        70% {
+          transform: translateX(0);
         }
-
-        /* Round 2 Text */
-        .t2-p1 { 
-            color: #ef4444; border-color: #ef4444; top: 30%; left: 40%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 7s); 
+        75% {
+          left: 400px;
+          opacity: 1;
+          filter: none;
+        } /* HOLD POSITION until beam hits */
+        78% {
+          left: 400px;
+          opacity: 1;
+          filter: brightness(10) blur(20px);
+        } /* IMPACT */
+        90% {
+          left: -1000px;
+          opacity: 0;
+          transform: scale(0) rotate(720deg);
+        } /* Blasted away */
+        100% {
+          left: -1000px;
+          opacity: 0;
         }
-        .t2-p2 { 
-            color: #0ea5e9; border-color: #0ea5e9; top: 30%; right: 40%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 8s); 
+      }
+
+      /* P2 Sequence: Enter -> Shield -> Rush -> Charge -> ULTIMATE */
+      @keyframes p2Sequence {
+        0% {
+          right: -600px;
         }
-
-        /* Round 3 Text */
-        .t3-p1 { 
-            color: #ef4444; border-color: #ef4444; top: 35%; left: 35%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 11s); 
+        10% {
+          right: 100px;
         }
-        .t3-p2 { 
-            color: #0ea5e9; border-color: #0ea5e9; top: 35%; right: 35%; 
-            animation: popText 3s forwards calc(var(--boot-delay) + 12s); 
+        20% {
+          transform: scale(1);
         }
-
-        /* Round 4: Ultimate Move Text */
-        .t4-win { 
-            color: #fbbf24; 
-            border: 10px solid #fbbf24;
-            background: rgba(0,0,0,0.9);
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%) scale(0); 
-            font-size: 140px; /* Huge text */
-            z-index: 3000;
-            padding: 60px 100px;
-            box-shadow: 0 0 100px #fbbf24;
-            animation: ultimateTextImpact 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards calc(var(--boot-delay) + 16s); 
-            white-space: nowrap;
+        25% {
+          transform: scale(1.1);
         }
-
-        /* Ultimate Beam Effect */
-        .ultimate-beam {
-            position: absolute;
-            top: 50%;
-            right: 300px;
-            transform: translateY(-50%);
-            height: 300px; /* Slightly thinner core */
-            width: 0;
-            /* Plasma Gradient */
-            background: linear-gradient(90deg, 
-                rgba(255,255,255,1) 0%, 
-                rgba(200, 240, 255, 1) 10%,
-                rgba(14, 165, 233, 0.8) 30%, 
-                rgba(56, 189, 248, 0.4) 60%,
-                transparent 100%
-            );
-            background-size: 200% 100%;
-            box-shadow: 
-                0 0 30px #fff, 
-                0 0 60px #0ea5e9, 
-                0 0 120px #0ea5e9,
-                inset 0 0 40px rgba(255,255,255,0.8);
-            z-index: 150;
-            opacity: 0;
-            border-radius: 150px 0 0 150px;
-            filter: blur(2px) contrast(1.2);
-            animation: fireBeam 1s forwards calc(var(--boot-delay) + 15s), beamFlow 0.2s linear infinite;
+        30% {
+          transform: scale(1);
         }
-
-        .ultimate-beam::after {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background: linear-gradient(90deg, white, transparent);
-            filter: blur(10px);
-            opacity: 0.8;
+        40% {
+          right: 100px;
         }
-
-        @keyframes beamFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+        45% {
+          right: 600px;
+          transform: scale(1.2);
         }
-
-        .screen-flash {
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 5000;
-            opacity: 0;
-            pointer-events: none;
-            animation: flash 0.5s forwards calc(var(--boot-delay) + 15.2s);
+        50% {
+          right: 400px;
+          transform: scale(1);
         }
-
-        /* Post Match Menu */
-        .post-match-menu {
-            position: absolute;
-            top: 70%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            gap: 40px;
-            z-index: 4000;
-            opacity: 0;
-            animation: fadeInMenu 1s forwards calc(var(--boot-delay) + 19s);
+        60% {
+          transform: scale(1);
         }
-
-        .menu-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #fbbf24;
-            color: #fbbf24;
-            font-family: 'Black Ops One', 'Noto Sans TC';
-            font-size: 32px;
-            padding: 20px 60px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+        65% {
+          transform: scale(1.1);
+        } /* Attack 3 */
+        70% {
+          transform: scale(1);
+          filter: brightness(1);
         }
-
-        .menu-btn:hover {
-            background: #fbbf24;
-            color: #000;
-            box-shadow: 0 0 50px rgba(251, 191, 36, 0.6);
-            transform: scale(1.1);
+        80% {
+          transform: scale(1.2) translateY(-50px);
+          filter: brightness(2) drop-shadow(0 0 50px #0ea5e9);
+        } /* Charge */
+        85% {
+          transform: scale(1.1) translateY(-50px);
+        } /* Fire */
+        100% {
+          right: 400px;
+          transform: scale(1.5) translateY(-50px);
+          filter: brightness(1.5);
         }
+      }
 
-        /* Battle Summary Table (Larger) */
-        .battle-summary {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1400px; /* Much wider */
-            background: rgba(5, 5, 5, 0.95);
-            border: 4px solid #fbbf24;
-            padding: 80px;
-            z-index: 5000;
-            display: none; /* Hidden by default, shown via JS */
-            font-family: 'Noto Sans TC', sans-serif;
-            text-align: center;
-            box-shadow: 0 0 100px rgba(0,0,0,0.8);
+      @keyframes fireBeam {
+        0% {
+          width: 0;
+          opacity: 1;
         }
-
-        .summary-title {
-            font-size: 72px; /* Larger title */
-            color: #fbbf24;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            border-bottom: 4px solid #fbbf24;
-            padding-bottom: 20px;
-            text-shadow: 0 0 30px #fbbf24;
+        20% {
+          width: 2000px;
+          opacity: 1;
         }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            font-size: 42px; /* Larger text */
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
+        80% {
+          width: 2000px;
+          opacity: 1;
         }
-
-        .summary-label { color: #9ca3af; text-align: left; width: 30%; }
-        .summary-val-p1 { color: #ef4444; text-decoration: line-through; width: 30%; }
-        .summary-val-p2 { color: #0ea5e9; font-weight: 900; width: 30%; text-shadow: 0 0 20px #0ea5e9; }
-
-        .summary-header-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            font-size: 48px;
-            font-family: 'Black Ops One', 'Noto Sans TC';
-            border-bottom: 2px solid #fbbf24;
-            padding-bottom: 10px;
+        100% {
+          width: 2000px;
+          opacity: 0;
         }
-        
-        .summary-header-p1 { color: #ef4444; width: 30%; }
-        .summary-header-p2 { color: #0ea5e9; width: 30%; text-shadow: 0 0 20px #0ea5e9; }
+      }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: #fbbf24;
-            font-size: 60px;
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.3s;
+      @keyframes flash {
+        0% {
+          opacity: 1;
         }
-        .close-btn:hover {
-            color: white;
+        100% {
+          opacity: 0;
         }
+      }
 
-            /* --- Animation Sequences (Updated for Ultimate) --- */
-            
-            /* P1 Sequence: Enter -> Shoot -> Rush -> Recoil -> Obliterated */
-            @keyframes p1Sequence {
-                0% { left: -600px; }
-                10% { left: 100px; } 
-                20% { transform: translateX(0); }
-                25% { transform: translateX(50px); } 
-                30% { transform: translateX(0); }
-                40% { left: 100px; }
-                45% { left: 600px; transform: scale(1.2); } 
-                50% { left: 400px; transform: scale(1); } 
-                60% { transform: translateX(0); }
-                65% { transform: translateX(30px); } /* Hit 3 */
-                70% { transform: translateX(0); }
-                75% { left: 400px; opacity: 1; filter: none; } /* HOLD POSITION until beam hits */
-                78% { left: 400px; opacity: 1; filter: brightness(10) blur(20px); } /* IMPACT */
-                90% { left: -1000px; opacity: 0; transform: scale(0) rotate(720deg); } /* Blasted away */
-                100% { left: -1000px; opacity: 0; }
-            }
+      @keyframes ultimateTextImpact {
+        0% {
+          transform: translate(-50%, -50%) scale(5);
+          opacity: 0;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 1;
+        }
+        70% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
 
-            /* P2 Sequence: Enter -> Shield -> Rush -> Charge -> ULTIMATE */
-            @keyframes p2Sequence {
-                0% { right: -600px; }
-                10% { right: 100px; } 
-                20% { transform: scale(1); }
-                25% { transform: scale(1.1); } 
-                30% { transform: scale(1); }
-                40% { right: 100px; }
-                45% { right: 600px; transform: scale(1.2); } 
-                50% { right: 400px; transform: scale(1); } 
-                60% { transform: scale(1); }
-                65% { transform: scale(1.1); } /* Attack 3 */
-                70% { transform: scale(1); filter: brightness(1); }
-                80% { transform: scale(1.2) translateY(-50px); filter: brightness(2) drop-shadow(0 0 50px #0ea5e9); } /* Charge */
-                85% { transform: scale(1.1) translateY(-50px); } /* Fire */
-                100% { right: 400px; transform: scale(1.5) translateY(-50px); filter: brightness(1.5); }
-            }
+      @keyframes fadeInMenu {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -40%);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
 
-            @keyframes fireBeam {
-                0% { width: 0; opacity: 1; }
-                20% { width: 2000px; opacity: 1; }
-                80% { width: 2000px; opacity: 1; }
-                100% { width: 2000px; opacity: 0; }
-            }
+      /* HP Logic */
+      @keyframes p1Damage {
+        0% {
+          width: 100%;
+          background: #ef4444;
+        }
+        20% {
+          width: 90%;
+        }
+        40% {
+          width: 70%;
+        }
+        60% {
+          width: 40%;
+        }
+        85% {
+          width: 0%;
+          background: #000;
+        } /* Instant drain on beam hit */
+        100% {
+          width: 0%;
+        }
+      }
 
-            @keyframes flash {
-                0% { opacity: 1; }
-                100% { opacity: 0; }
-            }
+      @keyframes announceFight {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0;
+        }
+        20% {
+          transform: translate(-50%, -50%) scale(1.5);
+          opacity: 1;
+        }
+        80% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(3);
+          opacity: 0;
+        }
+      }
 
-            @keyframes ultimateTextImpact {
-                0% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
-                50% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
-                70% { transform: translate(-50%, -50%) scale(1.1); }
-                100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            }
+      @keyframes hudBoot {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes scrollGrid {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: 0 1000px;
+        }
+      }
+      @keyframes scan {
+        from {
+          width: 10%;
+          left: 45%;
+        }
+        to {
+          width: 90%;
+          left: 5%;
+        }
+      }
+      @keyframes pulseCore {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+      @keyframes spinSlow {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes floatWing {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
 
-            @keyframes fadeInMenu { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+      /* Text Popups */
+      .pop-text {
+        position: absolute;
+        font-family: "Noto Sans TC", sans-serif;
+        font-size: 40px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: 2px solid;
+        background: rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        white-space: nowrap;
+      }
 
-            /* HP Logic */
-            @keyframes p1Damage {
-                0% { width: 100%; background: #ef4444; }
-                20% { width: 90%; } 
-                40% { width: 70%; } 
-                60% { width: 40%; } 
-                85% { width: 0%; background: #000; } /* Instant drain on beam hit */
-                100% { width: 0%; }
-            }
-
-            @keyframes announceFight {
-                0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-                20% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-                100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
-            }
-
-            @keyframes hudBoot { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes scrollGrid { from { background-position: 0 0; } to { background-position: 0 1000px; } }
-            @keyframes scan { from { width: 10%; left: 45%; } to { width: 90%; left: 5%; } }
-            @keyframes pulseCore { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
-            @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            @keyframes floatWing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-            /* Text Popups */
-            .pop-text {
-                position: absolute;
-                font-family: 'Noto Sans TC', sans-serif;
-                font-size: 40px;
-                font-weight: bold;
-                padding: 10px 20px;
-                border: 2px solid;
-                background: rgba(0,0,0,0.8);
-                opacity: 0;
-                white-space: nowrap;
-            }
-
-            @keyframes popText {
-                0% { opacity: 0; transform: translateY(20px) scale(0.5); }
-                20% { opacity: 1; transform: translateY(0) scale(1.2); }
-                100% { opacity: 0; transform: translateY(-50px) scale(1); }
-            }
-
+      @keyframes popText {
+        0% {
+          opacity: 0;
+          transform: translateY(20px) scale(0.5);
+        }
+        20% {
+          opacity: 1;
+          transform: translateY(0) scale(1.2);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-50px) scale(1);
+        }
+      }
     </style>
-</head>
-<body>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
     <!-- 1. Loading Sequence -->
     <div class="loading-screen">
-        <div class="loading-text">
-            <div class="loading-line l1">> 系統啟動序列初始化...</div>
-            <div class="loading-line l2">> 正在加載地形數據：第7區... [OK]</div>
-            <div class="loading-line l3">> 校準武器系統... [OK]</div>
-            <div class="loading-line l4">> 同步神經連結... [OK]</div>
-            <div class="loading-line l5">> 優化 Tensor 核心運算... [OK]</div>
-            <div class="loading-line l6">> 下載對手數據：傳統AI.EXE</div>
-            <div class="loading-line l7">> 分析威脅等級... <span style="color: #ef4444; font-weight: bold; text-shadow: 0 0 10px #ef4444;">極高</span></div>
-            <div class="loading-line l8">> 警告：敵方高速接近中！</div>
-            <div class="loading-line l9">> 解除安全限制... [SUCCESS]</div>
-            <div class="loading-line l10">> 戰鬥模式：全開</div>
+      <div class="loading-text">
+        <div class="loading-line l1">> 系統啟動序列初始化...</div>
+        <div class="loading-line l2">> 正在加載地形數據：第7區... [OK]</div>
+        <div class="loading-line l3">> 校準武器系統... [OK]</div>
+        <div class="loading-line l4">> 同步神經連結... [OK]</div>
+        <div class="loading-line l5">> 優化 Tensor 核心運算... [OK]</div>
+        <div class="loading-line l6">> 下載對手數據：傳統AI.EXE</div>
+        <div class="loading-line l7">
+          > 分析威脅等級...<span
+            style="
+              color: #ef4444;
+              font-weight: bold;
+              text-shadow: 0 0 10px #ef4444;
+            "
+            >極高</span
+          >
         </div>
+        <div class="loading-line l8">> 警告：敵方高速接近中！</div>
+        <div class="loading-line l9">> 解除安全限制... [SUCCESS]</div>
+        <div class="loading-line l10">> 戰鬥模式：全開</div>
+      </div>
     </div>
 
     <!-- 2. HUD -->
     <div class="hud">
-        <div class="hp-bar-container p1-hp">
-            <div class="hp-label hp-label-p1">傳統 AI</div>
-            <div class="hp-bar"><div class="hp-fill"></div></div>
-        </div>
-        <div class="hp-bar-container p2-hp">
-            <div class="hp-label hp-label-p2">NOTEBOOK LM</div>
-            <div class="hp-bar"><div class="hp-fill"></div></div>
-        </div>
+      <div class="hp-bar-container p1-hp">
+        <div class="hp-label hp-label-p1">傳統 AI</div>
+        <div class="hp-bar"><div class="hp-fill"></div></div>
+      </div>
+      <div class="hp-bar-container p2-hp">
+        <div class="hp-label hp-label-p2">NOTEBOOKLM</div>
+        <div class="hp-bar"><div class="hp-fill"></div></div>
+      </div>
     </div>
 
     <div class="fight-announcer">FIGHT!</div>
 
     <!-- 3. Arena -->
     <div class="arena">
-        <div class="floor-grid"></div>
-        
-        <!-- Left Mech (Traditional AI) -->
-        <div class="mech mech-p1">
-            <div class="mech-body">
-                <div class="leg-l"></div>
-                <div class="leg-r"></div>
-                <div class="torso">
-                    <div class="mech-label">AI</div>
-                </div>
-                <div class="head"></div>
-                <div class="eye"></div>
-                <div class="arm-l"></div>
-                <div class="arm-r"></div>
-            </div>
+      <div class="floor-grid"></div>
+
+      <!-- Left Mech (Traditional AI) -->
+      <div class="mech mech-p1">
+        <div class="mech-body">
+          <div class="leg-l"></div>
+          <div class="leg-r"></div>
+          <div class="torso">
+            <div class="mech-label">AI</div>
+          </div>
+          <div class="head"></div>
+          <div class="eye"></div>
+          <div class="arm-l"></div>
+          <div class="arm-r"></div>
         </div>
+      </div>
 
-        <!-- Right Mech (NotebookLM) -->
-        <div class="mech mech-p2">
-            <div class="mech-body">
-                <div class="leg-l"></div>
-                <div class="leg-r"></div>
-                <div class="torso">
-                    <svg class="notebook-logo" viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Tangent Arches (Overlap on Left) -->
-                        <path d="M 20 90 A 50 50 0 0 1 120 90" />
-                        <path d="M 20 90 A 40 40 0 0 1 100 90" />
-                        <path d="M 20 90 A 30 30 0 0 1 80 90" />
-                    </svg>
-                </div>
-                <div class="head"></div>
-                <div class="eye"></div>
-                <div class="arm-l"></div>
-                <div class="arm-r"></div>
-            </div>
+      <!-- Right Mech (NotebookLM) -->
+      <div class="mech mech-p2">
+        <div class="mech-body" id="notebook-mech-container">
+          <!-- Three.js Canvas will be injected here -->
         </div>
+      </div>
 
-        <!-- Combat Text Popups -->
-        <!-- Round 1: Data Source -->
-        <div class="pop-text t1-p1">⚠️ 攻擊：全網數據海</div>
-        <div class="pop-text t1-p2">🛡️ 防禦：專屬知識庫</div>
+      <!-- Combat Text Popups -->
+      <!-- Round 1: Data Source -->
+      <div class="pop-text t1-p1">⚠️ 攻擊：全網數據海</div>
+      <div class="pop-text t1-p2">🛡️ 防禦：專屬知識庫</div>
 
-        <!-- Round 2: Hallucination -->
-        <div class="pop-text t2-p1">😵 技能：隨機編造</div>
-        <div class="pop-text t2-p2">✨ 反擊：零幻覺鎖定</div>
+      <!-- Round 2: Hallucination -->
+      <div class="pop-text t2-p1">😵 技能：隨機編造</div>
+      <div class="pop-text t2-p2">✨ 反擊：零幻覺鎖定</div>
 
-        <!-- Round 3: Citation -->
-        <div class="pop-text t3-p1">❓ 狀態：來源不明</div>
-        <div class="pop-text t3-p2">📝 攻擊：精準引用</div>
+      <!-- Round 3: Citation -->
+      <div class="pop-text t3-p1">❓ 狀態：來源不明</div>
+      <div class="pop-text t3-p2">📝 攻擊：精準引用</div>
 
-        <!-- Round 4: Ultimate -->
-        <div class="pop-text t4-win">🏆 必殺：完全免費</div>
+      <!-- Round 4: Ultimate -->
+      <div class="pop-text t4-win">🏆 必殺：完全免費</div>
 
-        <!-- Ultimate Effects -->
-        <div class="ultimate-beam"></div>
-        <div class="screen-flash"></div>
+      <!-- Ultimate Effects -->
+      <div class="ultimate-beam"></div>
+      <div class="screen-flash"></div>
     </div>
 
     <!-- Post Match Menu -->
     <div class="post-match-menu" id="postMatchMenu">
-        <button class="menu-btn" onclick="restartBattle()">🔄 重啟戰鬥</button>
-        <button class="menu-btn" onclick="showSummary()">📊 查看戰報</button>
+      <button class="menu-btn" onclick="restartBattle()">🔄 重啟戰鬥</button>
+      <button class="menu-btn" onclick="showSummary()">📊 查看戰報</button>
     </div>
 
     <!-- Battle Summary -->
     <div class="battle-summary" id="battleSummary">
-        <button class="close-btn" onclick="closeSummary()">×</button>
-        <div class="summary-title">戰鬥總結報告</div>
-        
-        <div class="summary-header-row">
-            <span class="summary-label"></span>
-            <span class="summary-header-p1">傳統 AI</span>
-            <span class="summary-header-p2">NOTEBOOK LM</span>
-        </div>
+      <button class="close-btn" onclick="closeSummary()">×</button>
+      <div class="summary-title">戰鬥總結報告</div>
 
-        <div class="summary-row">
-            <span class="summary-label">資料來源</span>
-            <span class="summary-val-p1">全網訓練</span>
-            <span class="summary-val-p2">你的專屬文件</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">幻覺問題</span>
-            <span class="summary-val-p1">經常編造</span>
-            <span class="summary-val-p2">零幻覺</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">引用能力</span>
-            <span class="summary-val-p1">無法驗證</span>
-            <span class="summary-val-p2">每句有出處</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">適用場景</span>
-            <span class="summary-val-p1">創意、聊天</span>
-            <span class="summary-val-p2">研究、分析</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">價格</span>
-            <span class="summary-val-p1">有限制</span>
-            <span class="summary-val-p2">完全免費</span>
-        </div>
+      <div class="summary-header-row">
+        <span class="summary-label"></span>
+        <span class="summary-header-p1">傳統 AI</span>
+        <span class="summary-header-p2">NOTEBOOKLM</span>
+      </div>
+
+      <div class="summary-row">
+        <span class="summary-label">資料來源</span>
+        <span class="summary-val-p1">全網訓練</span>
+        <span class="summary-val-p2">你的專屬文件</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">幻覺問題</span>
+        <span class="summary-val-p1">經常編造</span>
+        <span class="summary-val-p2">零幻覺</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">引用能力</span>
+        <span class="summary-val-p1">無法驗證</span>
+        <span class="summary-val-p2">每句有出處</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">適用場景</span>
+        <span class="summary-val-p1">創意、聊天</span>
+        <span class="summary-val-p2">研究、分析</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">價格</span>
+        <span class="summary-val-p1">有限制</span>
+        <span class="summary-val-p2">完全免費</span>
+      </div>
     </div>
 
     <script>
-        // Check for skip intro param
-        if (new URLSearchParams(window.location.search).has('skipIntro')) {
-            document.body.classList.add('skip-intro');
-        }
+      // Check for skip intro param
+      if (new URLSearchParams(window.location.search).has("skipIntro")) {
+        document.body.classList.add("skip-intro");
+      }
 
-        function showSummary() {
-            document.getElementById('postMatchMenu').style.display = 'none';
-            document.getElementById('battleSummary').style.display = 'block';
-        }
+      function showSummary() {
+        document.getElementById("postMatchMenu").style.display = "none";
+        document.getElementById("battleSummary").style.display = "block";
+      }
 
-        function closeSummary() {
-            document.getElementById('battleSummary').style.display = 'none';
-            document.getElementById('postMatchMenu').style.display = 'flex';
-        }
+      function closeSummary() {
+        document.getElementById("battleSummary").style.display = "none";
+        document.getElementById("postMatchMenu").style.display = "flex";
+      }
 
-        function restartBattle() {
-            const url = new URL(window.location);
-            url.searchParams.set('skipIntro', '1');
-            window.location = url;
-        }
+      function restartBattle() {
+        const url = new URL(window.location);
+        url.searchParams.set("skipIntro", "1");
+        window.location = url;
+      }
     </script>
-</body>
+    <script type="module">
+      import * as THREE from "three";
+      import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+
+      function initNotebookMech() {
+        const container = document.getElementById("notebook-mech-container");
+        if (!container) return;
+
+        const width = 400;
+        const height = 500;
+
+        // --- Scene Setup ---
+        const scene = new THREE.Scene();
+        // Transparent background
+
+        const camera = new THREE.PerspectiveCamera(
+          45,
+          width / height,
+          0.1,
+          1000
+        );
+        camera.position.set(0, 1, 4.5);
+        camera.lookAt(0, 0.5, 0);
+
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+        });
+        renderer.setSize(width, height);
+        renderer.setClearColor(0x000000, 0); // Fully transparent
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        mainLight.position.set(2, 5, 5);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+
+        const blueLight = new THREE.PointLight(0x0ea5e9, 3, 10);
+        blueLight.position.set(-2, 2, 2);
+        scene.add(blueLight);
+
+        // --- Robot Group ---
+        const robot = new THREE.Group();
+        // Center the robot vertically in the view
+        robot.position.y = -0.8;
+        scene.add(robot);
+
+        // Materials
+        const matWhite = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          roughness: 0.3,
+          metalness: 0.8,
+        });
+        const matBlue = new THREE.MeshStandardMaterial({
+          color: 0x0ea5e9,
+          roughness: 0.2,
+          metalness: 0.9,
+          emissive: 0x075985,
+          emissiveIntensity: 0.2,
+        });
+        const matDark = new THREE.MeshStandardMaterial({
+          color: 0x1e293b,
+          roughness: 0.5,
+          metalness: 0.5,
+        });
+        const matGlow = new THREE.MeshBasicMaterial({ color: 0x0ea5e9 });
+
+        // 1. Torso
+        const torsoGeo = new RoundedBoxGeometry(0.8, 1.0, 0.5, 4, 0.05);
+        const torso = new THREE.Mesh(torsoGeo, matBlue);
+        torso.position.y = 1.6;
+        torso.castShadow = true;
+        robot.add(torso);
+
+        // Chest Plate (White)
+        const chestGeo = new RoundedBoxGeometry(0.6, 0.5, 0.1, 4, 0.02);
+        const chest = new THREE.Mesh(chestGeo, matWhite);
+        chest.position.set(0, 0.1, 0.26);
+        chest.castShadow = true;
+        torso.add(chest);
+
+        // Core (NotebookLM Logo)
+        const loader = new THREE.TextureLoader();
+        const logoTexture = loader.load("../google-notebooklm-app-icon-hd.png");
+        logoTexture.colorSpace = THREE.SRGBColorSpace;
+
+        const logoGeo = new THREE.PlaneGeometry(0.35, 0.35);
+        const logoMat = new THREE.MeshBasicMaterial({
+          map: logoTexture,
+          transparent: true,
+          side: THREE.DoubleSide,
+        });
+        const logo = new THREE.Mesh(logoGeo, logoMat);
+        logo.position.set(0, 0.1, 0.32); // Slightly in front of chest
+        torso.add(logo);
+
+        // 2. Head
+        const headGroup = new THREE.Group();
+        headGroup.position.y = 0.7;
+        torso.add(headGroup);
+
+        const headGeo = new RoundedBoxGeometry(0.5, 0.5, 0.5, 4, 0.05);
+        const head = new THREE.Mesh(headGeo, matWhite);
+        head.castShadow = true;
+        headGroup.add(head);
+
+        // Visor
+        const visorGeo = new RoundedBoxGeometry(0.4, 0.15, 0.05, 2, 0.01);
+        const visor = new THREE.Mesh(visorGeo, matGlow);
+        visor.position.set(0, 0.05, 0.26);
+        headGroup.add(visor);
+
+        // Antennae
+        const earGeo = new THREE.BoxGeometry(0.1, 0.3, 0.1);
+        const earL = new THREE.Mesh(earGeo, matBlue);
+        earL.position.set(-0.3, 0, 0);
+        headGroup.add(earL);
+        const earR = new THREE.Mesh(earGeo, matBlue);
+        earR.position.set(0.3, 0, 0);
+        headGroup.add(earR);
+
+        // 3. Shoulders
+        const shoulderGeo = new THREE.SphereGeometry(0.25, 32, 32);
+        const shoulderL = new THREE.Mesh(shoulderGeo, matWhite);
+        shoulderL.position.set(-0.6, 0.4, 0);
+        torso.add(shoulderL);
+        const shoulderR = new THREE.Mesh(shoulderGeo, matWhite);
+        shoulderR.position.set(0.6, 0.4, 0);
+        torso.add(shoulderR);
+
+        // 4. Arms
+        const armGeo = new RoundedBoxGeometry(0.15, 0.6, 0.15, 4, 0.02);
+
+        // Left Arm
+        const armLGroup = new THREE.Group();
+        armLGroup.position.set(-0.6, 0.4, 0);
+        torso.add(armLGroup);
+        const armL = new THREE.Mesh(armGeo, matDark);
+        armL.position.y = -0.4;
+        armLGroup.add(armL);
+        const forearmLGeo = new RoundedBoxGeometry(0.2, 0.5, 0.2, 4, 0.02);
+        const forearmL = new THREE.Mesh(forearmLGeo, matWhite);
+        forearmL.position.y = -0.7;
+        armL.add(forearmL);
+
+        // Right Arm (Cannon)
+        const armRGroup = new THREE.Group();
+        armRGroup.position.set(0.6, 0.4, 0);
+        torso.add(armRGroup);
+        const armR = new THREE.Mesh(armGeo, matDark);
+        armR.position.y = -0.4;
+        armRGroup.add(armR);
+        const cannonGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.6, 16);
+        const cannon = new THREE.Mesh(cannonGeo, matBlue);
+        cannon.position.y = -0.5;
+        armR.add(cannon);
+        const cannonTipGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.1, 16);
+        const cannonTip = new THREE.Mesh(cannonTipGeo, matGlow);
+        cannonTip.position.y = -0.35;
+        cannon.add(cannonTip);
+
+        // 5. Hips/Legs
+        const pelvisGeo = new THREE.CylinderGeometry(0.3, 0.4, 0.3, 8);
+        const pelvis = new THREE.Mesh(pelvisGeo, matDark);
+        pelvis.position.y = -0.65;
+        torso.add(pelvis);
+
+        const legGeo = new RoundedBoxGeometry(0.2, 0.6, 0.25, 4, 0.02);
+        const bootGeo = new RoundedBoxGeometry(0.25, 0.2, 0.4, 4, 0.05);
+
+        // Left Leg
+        const legLGroup = new THREE.Group();
+        legLGroup.position.set(-0.25, -0.15, 0);
+        pelvis.add(legLGroup);
+        const thighL = new THREE.Mesh(legGeo, matWhite);
+        thighL.position.y = -0.4;
+        legLGroup.add(thighL);
+        const shinL = new THREE.Mesh(legGeo, matBlue);
+        shinL.position.y = -0.7;
+        thighL.add(shinL);
+        const bootL = new THREE.Mesh(bootGeo, matDark);
+        bootL.position.set(0, -0.4, 0.05);
+        shinL.add(bootL);
+
+        // Right Leg
+        const legRGroup = new THREE.Group();
+        legRGroup.position.set(0.25, -0.15, 0);
+        pelvis.add(legRGroup);
+        const thighR = new THREE.Mesh(legGeo, matWhite);
+        thighR.position.y = -0.4;
+        legRGroup.add(thighR);
+        const shinR = new THREE.Mesh(legGeo, matBlue);
+        shinR.position.y = -0.7;
+        thighR.add(shinR);
+        const bootR = new THREE.Mesh(bootGeo, matDark);
+        bootR.position.set(0, -0.4, 0.05);
+        shinR.add(bootR);
+
+        // --- Animation Loop ---
+        function animate() {
+          requestAnimationFrame(animate);
+
+          const time = Date.now() * 0.001;
+
+          // Idle Float
+          robot.position.y = -0.8 + Math.sin(time * 1) * 0.05;
+          // Breathe
+          torso.scale.setScalar(1 + Math.sin(time * 2) * 0.005);
+          // Arm sway
+          armLGroup.rotation.z = Math.sin(time * 1.5) * 0.05 + 0.1;
+          armRGroup.rotation.z = -Math.sin(time * 1.5) * 0.05 - 0.1;
+          // Head slight turn
+          headGroup.rotation.y = Math.sin(time * 0.5) * 0.1;
+
+          renderer.render(scene, camera);
+        }
+        animate();
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initNotebookMech);
+      } else {
+        initNotebookMech();
+      }
+    </script>
+  </body>
 </html>
