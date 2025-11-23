@@ -215,7 +215,7 @@
         );
         border: 2px solid var(--neon-blue);
         border-radius: 40px;
-        padding: 60px;
+        padding: 40px 60px; /* Slightly tighter vertical padding */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -259,7 +259,7 @@
       .follow-title {
         font-size: 64px;
         font-weight: 900;
-        margin-bottom: 50px;
+        margin-bottom: 30px; /* Reduce gap above URL */
         color: #fff;
         text-shadow: 0 0 30px var(--neon-blue);
         z-index: 2;
@@ -267,16 +267,18 @@
 
       .url-container {
         background: rgba(0, 0, 0, 0.8);
-        padding: 40px 80px;
+        padding: 18px 70px; /* tighter vertical and slightly tighter horizontal padding */
         border-radius: 30px;
         border: 2px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 40px;
+        margin-bottom: 20px; /* Reduce gap between URL and hint */
         display: flex;
         align-items: center;
         gap: 30px;
         box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
         z-index: 2;
         transition: transform 0.3s;
+        max-width: 1400px;
+        box-sizing: border-box;
       }
 
       .url-container:hover {
@@ -285,30 +287,29 @@
       }
 
       .bilibili-icon {
-        width: 80px;
-        height: 80px;
-        background: #00a1d6;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 40px;
-        font-weight: bold;
-        box-shadow: 0 0 20px #00a1d6;
+        width: 140px;              /* logo width */
+        height: 50px;              /* logo height */
+        background: url("../bilibili logo.png") center/contain no-repeat;
+        border-radius: 0;          /* no circular wrap */
+        box-shadow: none;          /* let the logo speak for itself */
+        flex-shrink: 0;
       }
 
       .url-text {
         font-family: "JetBrains Mono", monospace;
-        font-size: 54px;
+        font-size: 44px;
         color: var(--neon-gold);
         letter-spacing: 2px;
         text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        white-space: normal;
+        word-break: break-all;
+        text-align: center;
       }
 
       .search-hint {
         font-size: 36px;
         color: #ccc;
-        margin-top: 10px;
+        margin-top: 0; /* Bring hint closer to URL */
         z-index: 2;
       }
 
@@ -352,7 +353,7 @@
 
     <!-- Particles -->
     <script>
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         let p = document.createElement("div");
         p.className = "particle";
         p.style.width = Math.random() * 5 + 2 + "px";
@@ -380,7 +381,7 @@
             <div class="feature-icon">🧠</div>
             <div class="feature-title">最強大腦</div>
             <div class="feature-desc">
-              搭載 Gemini 2.5 Pro + LearnLM，理解力與推理力滿點。
+              搭載 Gemini 2.5 Pro + LearnLM，理解力與推理力滿點 (即將進化為Gemini 3.0)。
             </div>
           </div>
           <div class="feature-card">
@@ -398,7 +399,7 @@
         <div class="follow-title">關注 Bilibili 獲取更多 AI 實戰教學</div>
 
         <div class="url-container">
-          <div class="bilibili-icon">B</div>
+          <div class="bilibili-icon"></div>
           <div class="url-text">space.bilibili.com/3546854541232968</div>
         </div>
 

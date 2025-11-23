@@ -1047,6 +1047,7 @@
         background: rgba(0, 0, 0, 0.8);
         opacity: 0;
         white-space: nowrap;
+        z-index: 300; /* Above mechs so cards are never blocked */
       }
 
       @keyframes popText {
@@ -1082,7 +1083,7 @@
         <div class="loading-line l3">> 校準武器系統... [OK]</div>
         <div class="loading-line l4">> 同步神經連結... [OK]</div>
         <div class="loading-line l5">> 優化 Tensor 核心運算... [OK]</div>
-        <div class="loading-line l6">> 下載對手數據：傳統AI.EXE</div>
+        <div class="loading-line l6">> 下載對手數據：傳統LLM.EXE</div>
         <!-- prettier-ignore -->
         <div class="loading-line l7">> 分析威脅等級...<span class="text-danger">極高</span></div>
         <div class="loading-line l8">> 警告：敵方高速接近中！</div>
@@ -1094,7 +1095,7 @@
     <!-- 2. HUD -->
     <div class="hud">
       <div class="hp-bar-container p1-hp">
-        <div class="hp-label hp-label-p1">傳統 AI</div>
+        <div class="hp-label hp-label-p1">傳統 LLM</div>
         <div class="hp-bar"><div class="hp-fill"></div></div>
       </div>
       <div class="hp-bar-container p2-hp">
@@ -1170,7 +1171,7 @@
 
       <div class="summary-header-row">
         <span class="summary-label"></span>
-        <span class="summary-header-p1">傳統 AI</span>
+        <span class="summary-header-p1">傳統 LLM</span>
         <span class="summary-header-p2">NOTEBOOKLM</span>
       </div>
 
