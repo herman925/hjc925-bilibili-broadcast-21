@@ -114,6 +114,12 @@
         text-shadow: 0 0 20px #fbbf24;
       }
 
+      .text-danger {
+        color: #ef4444;
+        font-weight: bold;
+        text-shadow: 0 0 10px #ef4444;
+      }
+
       @keyframes typeLine {
         to {
           opacity: 1;
@@ -192,7 +198,7 @@
       .p1-hp .hp-fill {
         background: #ef4444;
         box-shadow: 0 0 20px #ef4444;
-        animation: p1Damage 20s forwards calc(var(--boot-delay) + 2s);
+        animation: p1Damage 35s forwards calc(var(--boot-delay) + 2s);
       }
       .p2-hp .hp-fill {
         background: #0ea5e9;
@@ -258,12 +264,12 @@
 
       .mech-p1 {
         left: -600px;
-        animation: p1Sequence 20s forwards var(--boot-delay);
+        animation: p1Sequence 35s forwards var(--boot-delay);
       }
 
       .mech-p2 {
         right: -600px;
-        animation: p2Sequence 20s forwards var(--boot-delay);
+        animation: p2Sequence 35s forwards var(--boot-delay);
       }
 
       /* P1: Heavy Industrial Mech */
@@ -469,39 +475,39 @@
         animation: popText 3s forwards calc(var(--boot-delay) + 4s);
       }
 
-      /* Round 2 Text */
+      /* Round 2 Text (Delayed to 10s) */
       .t2-p1 {
         color: #ef4444;
         border-color: #ef4444;
         top: 30%;
         left: 40%;
-        animation: popText 3s forwards calc(var(--boot-delay) + 7s);
+        animation: popText 3s forwards calc(var(--boot-delay) + 10s);
       }
       .t2-p2 {
         color: #0ea5e9;
         border-color: #0ea5e9;
         top: 30%;
         right: 40%;
-        animation: popText 3s forwards calc(var(--boot-delay) + 8s);
+        animation: popText 3s forwards calc(var(--boot-delay) + 11s);
       }
 
-      /* Round 3 Text */
+      /* Round 3 Text (Delayed to 17s) */
       .t3-p1 {
         color: #ef4444;
         border-color: #ef4444;
         top: 35%;
         left: 35%;
-        animation: popText 3s forwards calc(var(--boot-delay) + 11s);
+        animation: popText 3s forwards calc(var(--boot-delay) + 17s);
       }
       .t3-p2 {
         color: #0ea5e9;
         border-color: #0ea5e9;
         top: 35%;
         right: 35%;
-        animation: popText 3s forwards calc(var(--boot-delay) + 12s);
+        animation: popText 3s forwards calc(var(--boot-delay) + 18s);
       }
 
-      /* Round 4: Ultimate Move Text */
+      /* Round 4: Ultimate Move Text (Delayed to 24s) */
       .t4-win {
         color: #fbbf24;
         border: 10px solid #fbbf24;
@@ -515,48 +521,70 @@
         box-shadow: 0 0 100px #fbbf24;
         animation: ultimateTextImpact 0.5s
           cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards
-          calc(var(--boot-delay) + 16s);
+          calc(var(--boot-delay) + 24s);
         white-space: nowrap;
       }
 
-      /* Ultimate Beam Effect */
-      .ultimate-beam {
+      /* Ultimate Beam Effect (Delayed to 23.5s) */
+      .ultimate-beam-container {
         position: absolute;
         top: 50%;
         right: 300px;
         transform: translateY(-50%);
-        height: 300px; /* Slightly thinner core */
+        height: 400px;
         width: 0;
-        /* Plasma Gradient */
-        background: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 1) 0%,
-          rgba(200, 240, 255, 1) 10%,
-          rgba(14, 165, 233, 0.8) 30%,
-          rgba(56, 189, 248, 0.4) 60%,
-          transparent 100%
-        );
-        background-size: 200% 100%;
-        box-shadow: 0 0 30px #fff, 0 0 60px #0ea5e9, 0 0 120px #0ea5e9,
-          inset 0 0 40px rgba(255, 255, 255, 0.8);
         z-index: 150;
-        opacity: 0;
-        border-radius: 150px 0 0 150px;
-        filter: blur(2px) contrast(1.2);
-        animation: fireBeam 1s forwards calc(var(--boot-delay) + 15s),
-          beamFlow 0.2s linear infinite;
+        display: flex;
+        align-items: center;
+        animation: fireBeam 1s forwards calc(var(--boot-delay) + 23.5s);
       }
 
-      .ultimate-beam::after {
-        content: "";
+      .beam-core {
         position: absolute;
-        top: 20%;
-        left: 0;
+        right: 0;
+        height: 100px;
         width: 100%;
-        height: 60%;
-        background: linear-gradient(90deg, white, transparent);
+        background: white;
+        border-radius: 50px 0 0 50px;
+        box-shadow: 0 0 20px white, 0 0 40px #0ea5e9;
+        z-index: 3;
+        filter: blur(2px);
+      }
+
+      .beam-glow {
+        position: absolute;
+        right: 0;
+        height: 250px;
+        width: 100%;
+        background: repeating-linear-gradient(
+          90deg,
+          rgba(14, 165, 233, 0) 0%,
+          rgba(14, 165, 233, 0.5) 20%,
+          rgba(56, 189, 248, 0.8) 40%,
+          rgba(14, 165, 233, 0.5) 60%,
+          rgba(14, 165, 233, 0) 80%
+        );
+        background-size: 200% 100%;
+        z-index: 2;
         filter: blur(10px);
-        opacity: 0.8;
+        animation: beamFlow 0.2s linear infinite;
+        border-radius: 125px 0 0 125px;
+      }
+
+      .beam-shockwave {
+        position: absolute;
+        right: 0;
+        height: 400px;
+        width: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(14, 165, 233, 0.2),
+          transparent
+        );
+        z-index: 1;
+        filter: blur(20px);
+        border-radius: 200px 0 0 200px;
       }
 
       @keyframes beamFlow {
@@ -564,7 +592,7 @@
           background-position: 0% 50%;
         }
         100% {
-          background-position: 100% 50%;
+          background-position: -200% 50%;
         }
       }
 
@@ -575,10 +603,10 @@
         z-index: 5000;
         opacity: 0;
         pointer-events: none;
-        animation: flash 0.5s forwards calc(var(--boot-delay) + 15.2s);
+        animation: flash 0.5s forwards calc(var(--boot-delay) + 23.7s);
       }
 
-      /* Post Match Menu */
+      /* Post Match Menu (Delayed to 29s) */
       .post-match-menu {
         position: absolute;
         top: 70%;
@@ -588,7 +616,7 @@
         gap: 40px;
         z-index: 4000;
         opacity: 0;
-        animation: fadeInMenu 1s forwards calc(var(--boot-delay) + 19s);
+        animation: fadeInMenu 1s forwards calc(var(--boot-delay) + 29s);
       }
 
       .menu-btn {
@@ -704,53 +732,63 @@
       /* --- Animation Sequences (Updated for Ultimate) --- */
 
       /* P1 Sequence: Enter -> Shoot -> Rush -> Recoil -> Obliterated */
+      /* P1 Sequence: Enter -> Shoot -> Rush -> Recoil -> Obliterated */
+      /* Total 35s */
       @keyframes p1Sequence {
         0% {
           left: -600px;
         }
-        10% {
+        5% {
           left: 100px;
         }
-        20% {
+        8% {
           transform: translateX(0);
         }
-        25% {
+        10% {
           transform: translateX(50px);
         }
-        30% {
+        12% {
           transform: translateX(0);
         }
-        40% {
+        /* Round 2: ~28% (10s) */
+        26% {
           left: 100px;
         }
-        45% {
+        28% {
           left: 600px;
           transform: scale(1.2);
         }
-        50% {
+        32% {
           left: 400px;
           transform: scale(1);
         }
-        60% {
+        /* Round 3: ~48% (17s) */
+        46% {
           transform: translateX(0);
         }
-        65% {
+        48% {
           transform: translateX(30px);
         } /* Hit 3 */
-        70% {
+        52% {
           transform: translateX(0);
         }
-        75% {
+        /* Round 4: ~68% (24s) */
+        66% {
           left: 400px;
           opacity: 1;
           filter: none;
+          transform: scale(1);
         } /* HOLD POSITION until beam hits */
-        78% {
+        67.5% {
+          filter: none;
+        } /* Delay color change */
+        68% {
           left: 400px;
           opacity: 1;
           filter: brightness(10) blur(20px);
+          transform: scale(1);
         } /* IMPACT */
-        90% {
+        75% {
           left: -1000px;
           opacity: 0;
           transform: scale(0) rotate(720deg);
@@ -758,52 +796,57 @@
         100% {
           left: -1000px;
           opacity: 0;
+          transform: scale(0);
         }
       }
 
       /* P2 Sequence: Enter -> Shield -> Rush -> Charge -> ULTIMATE */
+      /* Total 35s */
       @keyframes p2Sequence {
         0% {
           right: -600px;
         }
-        10% {
+        5% {
           right: 100px;
         }
-        20% {
+        8% {
           transform: scale(1);
         }
-        25% {
+        10% {
           transform: scale(1.1);
         }
-        30% {
+        12% {
           transform: scale(1);
         }
-        40% {
+        /* Round 2: ~28% (10s) */
+        26% {
           right: 100px;
         }
-        45% {
+        28% {
           right: 600px;
           transform: scale(1.2);
         }
-        50% {
+        32% {
           right: 400px;
           transform: scale(1);
         }
-        60% {
+        /* Round 3: ~48% (17s) */
+        46% {
           transform: scale(1);
         }
-        65% {
+        48% {
           transform: scale(1.1);
         } /* Attack 3 */
-        70% {
+        52% {
           transform: scale(1);
           filter: brightness(1);
         }
-        80% {
+        /* Round 4: ~68% (24s) */
+        66% {
           transform: scale(1.2) translateY(-50px);
           filter: brightness(2) drop-shadow(0 0 50px #0ea5e9);
         } /* Charge */
-        85% {
+        68% {
           transform: scale(1.1) translateY(-50px);
         } /* Fire */
         100% {
@@ -876,19 +919,42 @@
           width: 100%;
           background: #ef4444;
         }
-        20% {
-          width: 90%;
+
+        /* Round 1 Hit (~3s) */
+        8% {
+          width: 100%;
         }
-        40% {
-          width: 70%;
+        10% {
+          width: 85%;
         }
-        60% {
-          width: 40%;
+
+        /* Round 2 Hit (~10s) */
+        28% {
+          width: 85%;
         }
-        85% {
+        30% {
+          width: 60%;
+        }
+
+        /* Round 3 Hit (~17s) */
+        48% {
+          width: 60%;
+        }
+        50% {
+          width: 30%;
+          background: #ef4444;
+        }
+
+        /* Round 4 Ultimate (~24s) - Instant Kill */
+        66% {
+          width: 30%;
+          background: #ef4444;
+        }
+        67% {
           width: 0%;
           background: #000;
-        } /* Instant drain on beam hit */
+        }
+
         100% {
           width: 0%;
         }
@@ -1017,16 +1083,8 @@
         <div class="loading-line l4">> 同步神經連結... [OK]</div>
         <div class="loading-line l5">> 優化 Tensor 核心運算... [OK]</div>
         <div class="loading-line l6">> 下載對手數據：傳統AI.EXE</div>
-        <div class="loading-line l7">
-          > 分析威脅等級...<span
-            style="
-              color: #ef4444;
-              font-weight: bold;
-              text-shadow: 0 0 10px #ef4444;
-            "
-            >極高</span
-          >
-        </div>
+        <!-- prettier-ignore -->
+        <div class="loading-line l7">> 分析威脅等級...<span class="text-danger">極高</span></div>
         <div class="loading-line l8">> 警告：敵方高速接近中！</div>
         <div class="loading-line l9">> 解除安全限制... [SUCCESS]</div>
         <div class="loading-line l10">> 戰鬥模式：全開</div>
@@ -1083,14 +1141,19 @@
       <div class="pop-text t2-p2">✨ 反擊：零幻覺鎖定</div>
 
       <!-- Round 3: Citation -->
-      <div class="pop-text t3-p1">❓ 狀態：來源不明</div>
+      <div class="pop-text t3-p1">❓ 狀態：來源存疑</div>
       <div class="pop-text t3-p2">📝 攻擊：精準引用</div>
 
       <!-- Round 4: Ultimate -->
       <div class="pop-text t4-win">🏆 必殺：完全免費</div>
 
       <!-- Ultimate Effects -->
-      <div class="ultimate-beam"></div>
+      <!-- Ultimate Effects -->
+      <div class="ultimate-beam-container">
+        <div class="beam-shockwave"></div>
+        <div class="beam-glow"></div>
+        <div class="beam-core"></div>
+      </div>
       <div class="screen-flash"></div>
     </div>
 
@@ -1133,7 +1196,7 @@
       </div>
       <div class="summary-row">
         <span class="summary-label">價格</span>
-        <span class="summary-val-p1">有限制</span>
+        <span class="summary-val-p1">有條件免費</span>
         <span class="summary-val-p2">完全免費</span>
       </div>
     </div>
@@ -1151,7 +1214,10 @@
 
       function closeSummary() {
         document.getElementById("battleSummary").style.display = "none";
-        document.getElementById("postMatchMenu").style.display = "flex";
+        const menu = document.getElementById("postMatchMenu");
+        menu.style.display = "flex";
+        menu.style.opacity = "1";
+        menu.style.animation = "none";
       }
 
       function restartBattle() {
