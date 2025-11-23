@@ -23,19 +23,57 @@
             border: 2px solid #00ff00;
             color: #00ff00;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 24px;
-            padding: 20px 40px;
+            font-size: 32px; /* Larger button text */
+            padding: 30px 60px; /* Larger button size */
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            position: relative;
+            overflow: visible;
+            animation: mysticGlow 3s infinite alternate;
+            z-index: 2;
+        }
+
+        /* Mystic Glow & Mist Effect */
+        @keyframes mysticGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), 0 0 40px rgba(0, 255, 0, 0.2);
+                text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 40px rgba(0, 255, 0, 0.8), 0 0 80px rgba(0, 255, 0, 0.4);
+                text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            }
+        }
+
+        .init-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            background: radial-gradient(circle, rgba(0, 255, 0, 0.2) 0%, transparent 70%);
+            filter: blur(20px);
+            opacity: 0;
+            animation: mistPulse 3s infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes mistPulse {
+            0% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
         }
 
         .init-btn:hover {
-            background: #00ff00;
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+            background: rgba(0, 255, 0, 0.1);
+            color: #fff;
+            box-shadow: 0 0 60px rgba(0, 255, 0, 1);
         }
 
         /* --- Loading Screen --- */
@@ -53,7 +91,7 @@
 
         .loading-bar-container {
             width: 600px;
-            height: 4px;
+            height: 8px; /* Bigger bar */
             background: #333;
             margin-top: 20px;
             position: relative;
@@ -70,7 +108,7 @@
 
         .loading-log {
             color: #00ff00;
-            font-size: 18px;
+            font-size: 24px; /* Bigger text */
             height: 30px;
             margin-bottom: 10px;
         }
@@ -406,7 +444,8 @@
 <body>
     <!-- Start Screen -->
     <div id="start-screen">
-        <button class="init-btn" onclick="startSystem()">Initiate System</button>
+        <canvas id="particleCanvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 1;"></canvas>
+        <button class="init-btn" id="initBtn" onclick="startSystem()" style="z-index: 2;">Initiate System</button>
     </div>
 
     <!-- Loading Screen -->
@@ -471,9 +510,28 @@
     </div>
 
     <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
         function startSystem() {
-            document.getElementById('start-screen').style.display = 'none';
+            // document.getElementById('start-screen').style.display = 'none'; // Keep start screen for particles
+            const btn = document.getElementById('initBtn');
+            
+            // Get button position for explosion origin
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Hide button and show loading UI
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+            document.getElementById('start-screen').style.background = 'transparent'; // Make start screen transparent to show loading screen
             document.getElementById('loading-screen').style.display = 'flex';
+            
+            // Trigger Particle Explosion
+            explodeParticles(centerX, centerY, rect.width);
             
             const loadingLog = document.getElementById('loadingLog');
             const loadingBar = document.getElementById('loadingBar');
@@ -512,6 +570,7 @@
 
                 if (progress >= 100) {
                     clearInterval(timer);
+                    document.getElementById('start-screen').style.display = 'none'; // Hide start screen after load
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('main-content').style.display = 'block';
                     // Start the terminal typing effect
@@ -520,25 +579,126 @@
             }, interval);
         }
 
+        // --- Particle System ---
+        const particles = [];
+        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ' +
+                      'ハヒフヘホマミムメモヤユヨラリルレロワンヴヰヱヲ' +
+                      'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                      '0123456789';
+        
+        class Particle {
+            constructor(x, y, vx, vy) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.gravity = 0.05; // Low gravity for feathery feel
+                this.char = chars[Math.floor(Math.random() * chars.length)];
+                this.size = Math.random() * 12 + 8; // The constants are for the size of the particles, where the first is the maximum size and the second is the minimum size
+                this.color = `rgba(0, 255, 0, ${Math.random() * 0.5 + 0.5})`;
+                this.grounded = false;
+                this.meltRate = 0.01 + Math.random() * 0.02;
+                this.opacity = 1;
+            }
+
+            update() {
+                if (!this.grounded) {
+                    this.vy += this.gravity;
+                    // Air resistance / Drag
+                    this.vy *= 0.99; 
+                    this.vx *= 0.98; // Slightly less drag on X to keep width
+                    
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    // Floor collision
+                    if (this.y > canvas.height - 20) {
+                        this.y = canvas.height - 20;
+                        this.grounded = true;
+                        this.vy = 0;
+                        this.vx = 0;
+                    }
+                } else {
+                    // Melting phase
+                    this.opacity -= this.meltRate;
+                }
+            }
+            
+            draw() {
+                if (this.opacity <= 0) return;
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px 'JetBrains Mono'`;
+                ctx.fillStyle = '#00ff00';
+                ctx.fillText(this.char, this.x, this.y);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function explodeParticles(x, y, width) {
+            // Calculate angles to top-left and top-right corners
+            // Top-Left (0,0) relative to button (x,y)
+            const angleLeft = Math.atan2(0 - y, 0 - x); 
+            // Top-Right (W,0) relative to button (x,y)
+            const angleRight = Math.atan2(0 - y, window.innerWidth - x);
+
+            // Spawn a lot of particles
+            for (let i = 0; i < 2000; i++) { // 1000 particles for density
+                // Randomize start position slightly within button area
+                const offsetX = (Math.random() - 0.5) * width;
+                
+                // Random angle between Left and Right corners
+                // Note: atan2 returns -PI to PI. 
+                // Top-Left is approx -2.x rad, Top-Right is approx -0.x rad.
+                // So we want random between them.
+                const angle = angleLeft + Math.random() * (angleRight - angleLeft);
+                
+                // Random speed - fast enough to reach edges
+                const speed = 15 + Math.random() * 25; 
+                
+                const pVx = Math.cos(angle) * speed;
+                const pVy = Math.sin(angle) * speed;
+
+                particles.push(new Particle(x + offsetX, y, pVx, pVy));
+            }
+            animateParticles();
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let active = false;
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+                if (p.opacity > 0) active = true;
+            });
+            if (active) requestAnimationFrame(animateParticles);
+        }
+
         const terminalBody = document.getElementById('terminalBody');
         const contentDiv = document.getElementById('terminal-content');
         
         const lines = [
-            "> 正在初始化 Gemini 2.5 Pro 模型...",
-            "> 分配 1,000,000 Token 上下文窗口...",
-            "> [OK] 上下文窗口已鎖定。",
-            "> 正在加載源文檔...",
-            "> 解析 PDF, TXT, Markdown, DOCX, 音頻...",
-            "> [成功] 已完成最大索引 50 個來源。",
-            "> 生成深度語音概覽...",
-            "> 合成語音 [主持人_1, 主持人_2]...",
-            "> [音頻] 播客生成完成。",
-            "> 分析語義關係...",
-            "> 提取引用和關鍵語錄...",
-            "> [系統] 知識圖譜已建立。",
-            "> 檢查訂閱狀態...",
-            "> 狀態: 100% 免費 (無需信用卡)",
-            "> 準備好回答用戶查詢。"
+            "> 正在初始化 Gemini 2.5 Pro (Reasoning Core)...",
+            "> [SET] 推理核心已激活.",
+            "> 檢測到 Nano Banana 模組...",
+            "> [READY] 超級圖像生成引擎就緒。",
+            "> 分配 1,000,000+ Token 上下文窗口...",
+            "> [DEPLOYED] 上下文窗口已鎖定 (支持 150M+ 字詞)。",
+            "> 正在掛載通用文件系統...",
+            "> [MOUNTED] PDF, DOCX, Sheets, Web, YouTube, 音頻, 圖像。",
+            "> 啟動「Deep Research」自主研究代理...",
+            "> [SUCCESS] 深度報告生成功能已啟用。",
+            "> 正在分析視頻輸入流...",
+            "> [SET] Video Overview (視頻轉代碼) 在線。",
+            "> 合成雙主持人 (Deep Dive) 音軌...",
+            "> [A/V] 播客級語音合成完成。",
+            "> 建立知識圖譜 (Grounding)...",
+            "> [SYSTEM] 就緒——嚴格基於來源，拒絕 AI 幻覺。",
+            "> 檢查協作狀態...",
+            "> [OK] 筆記本共享與實時編輯已同步。",
+            "> 狀態: 100% 免費設定中...",
+            "> 準備好成為您的第二大腦。",
+            "> [BY GOOGLE] WELCOME TO NOTEBOOKLM"
         ];
 
         let lineIndex = 0;
@@ -548,6 +708,7 @@
         function typeLine() {
             // Reset if we reached the end
             if (lineIndex >= lines.length) {
+
                 setTimeout(() => {
                     contentDiv.innerHTML = '';
                     lineIndex = 0;
@@ -559,9 +720,17 @@
             if (charIndex === 0) {
                 currentLineElement = document.createElement('div');
                 currentLineElement.style.marginBottom = '8px';
-                currentLineElement.style.color = lineIndex === lines.length - 2 ? '#4ade80' : '#22d3ee'; // Green for FREE line
-                if (lines[lineIndex].includes('[ERROR]')) currentLineElement.style.color = '#ef4444';
-                if (lines[lineIndex].includes('[OK]') || lines[lineIndex].includes('[成功]')) currentLineElement.style.color = '#4ade80';
+                // Default: cyan, with special FREE line kept green
+                currentLineElement.style.color = lineIndex === lines.length - 2 ? '#4ade80' : '#22d3ee';
+                const lineText = lines[lineIndex];
+
+                // Error lines stay red
+                if (lineText.includes('[ERROR]')) {
+                    currentLineElement.style.color = '#ef4444';
+                // Any tagged system/status line like [OK], [SET], [READY], [SYSTEM], [BY GOOGLE] turns green
+                } else if (lineText.includes('[')) {
+                    currentLineElement.style.color = '#4ade80';
+                }
                 
                 contentDiv.appendChild(currentLineElement);
             }
